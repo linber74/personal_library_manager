@@ -14,20 +14,26 @@ public class Dialog_Boxes {
                 return userInput;
             }
             JOptionPane.showMessageDialog(null, Dialogtext.EMPTY,
-                    "FEL", JOptionPane.ERROR_MESSAGE);
+                    Dialogtext.TITLEEMPTY, JOptionPane.ERROR_MESSAGE);
         }
     }
-//    För framtiden, kommer fortsätta jobba på detta
-//    public static void output (String message){
-//        JOptionPane.showMessageDialog(null,message);
-//    }
+    //För framtiden, kommer fortsätta jobba på detta
+    public static void outputMessage (String message){
+        JOptionPane.showMessageDialog(null,message);
+    }
 
-    public static int category(String[] options) {
-        return JOptionPane.showOptionDialog(
-                null, "Vilken Kategori?\n", "Kategorier",
-                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
-                null, options, options[0]
-        );
+    public static String category(String[] CHOICES) {
+        JFrame frame = new JFrame();
+        Object result = JOptionPane.showInputDialog(
+                frame,
+                Dialogtext.WHICHCATEGORI,
+                Dialogtext.TITLECATEGORI,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                Dialogtext.CHOICES,
+                Dialogtext.CHOICES[0]);
+
+        return (result == null) ? null : result.toString();
     }
 }
 
