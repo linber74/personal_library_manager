@@ -1,4 +1,4 @@
-package Bibliotek;
+package Archive_Superklass;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -10,10 +10,9 @@ public class Archive {
     private final String title;
     private final String genre;
     private final String language;
-    private final String format;
+    protected final String format;
 
     private static final ArrayList<Archive> samling = new ArrayList<>();
-
 
     public Archive(String title, String genre, String language, String format) {
         this.title = title;

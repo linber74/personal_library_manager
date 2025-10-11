@@ -1,7 +1,6 @@
-package Bibliotek;
-
-
-import javax.swing.*;
+import Archive_Superklass.Bibliotek.Bibliotek;
+import Service.Dialog_Boxes;
+import Service.Dialogtext;
 
 public class Main {
     public static void main(String[] arg) {

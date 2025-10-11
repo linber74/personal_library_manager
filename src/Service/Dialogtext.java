@@ -1,4 +1,4 @@
-package Bibliotek;
+package Service;
 
 public class Dialogtext {
 
@@ -17,12 +17,17 @@ public class Dialogtext {
     protected static final String TITLEEMPTY = "Fel";
 
     //Val
-    protected static final String[] FORMAT= {"Hardcover, Paperback"};
     protected static final String[] CHOICES = {"Bok", "Audiobok", " E-bok", "Film"};
+    protected static final String[] FORMAT = {"Hardcover, Paperback"};
+    protected static final String[] FILMFORMAT = {"DigitalFilm", "DVD", "Blueray"};
     protected static final String BOK = "Bok";
-    protected static final String E_BOK = "E-bok";
-    protected static final String AUDIOBOK = "Audiobok";
+    public static final String E_BOK = "E-bok";
+    public static final String AUDIOBOK = "Ljudbok";
     protected static final String FILM = "Film";
+    public static final String DIGITAL_FILM = "Digitalfilm";
+    public static final String DVD = "DVD";
+    public static final String BLUERAY = "Blueray";
+
 
 
     //Fel eller tomt
