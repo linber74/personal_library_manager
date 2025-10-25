@@ -8,25 +8,34 @@ public class Dialogtext {
     protected static final String GENRE = "Vilken Genrer?";
     protected static final String LANGUAGE = "Vilket Språk?";
     protected static final String COVER = "Är det Hardcover eller Paperback?";
+    protected static final String EBOOK = "Är det E-bok  eller Fanfiction?";
+    protected static final String MOVIE = "Vilket format?";
+    protected static final String FILMORSERIE = "Är det Film eller Serie";
     protected static final String CLOSE = "Programmet Stängs";
 
     protected  static final String WHICHCATEGORI = "Vilken Kategori?";
 
     //Titel
-    protected static final String TITLECATEGORI =  "Kategorier";
-    protected static final String TITLEEMPTY = "Fel";
+    protected static final String TITLECATEGORI =  "KATEGORI";
+    protected static final String TITLEBOOK =  "BOK";
+    protected static final String TITLEFILM =  "FILM";
+    public static final String TITLEEMPTY = "FEL";
 
     //Val
-    protected static final String[] CHOICES = {"Bok", "Audiobok", " E-bok", "Film"};
-    protected static final String[] FORMAT = {"Hardcover, Paperback"};
-    protected static final String[] FILMFORMAT = {"DigitalFilm", "DVD", "Blueray"};
-    protected static final String BOK = "Bok";
-    public static final String E_BOK = "E-bok";
+    public static final String[] CHOICES = {"Bok", "Film", "Spel"};
+    protected static final String[] BOOKFORMAT = {"Hardcover", "Paperback"};
+    protected static final String[] EBOOKFORMAT = {"E-bok", "Fanfiction" };
+    protected static final String[] FILMFORMAT = {"Offlinefilm", "DVD", "Blueray"};
+
+    protected static final String BOOK = "Bok";
+    public static final String E_BOOK = "E-bok";
+    public static final String FANFICTION = "Fanfiction";
     public static final String AUDIOBOK = "Ljudbok";
     protected static final String FILM = "Film";
-    public static final String DIGITAL_FILM = "Digitalfilm";
+    public static final String OFFLINEFILM = "Offlinefilm";
     public static final String DVD = "DVD";
     public static final String BLUERAY = "Blueray";
+    public static final String GAMES = "Spel";
 
 
 

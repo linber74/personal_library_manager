@@ -1,11 +1,11 @@
-package Archive_Superklass.Bibliotek;
+package MediaArchive.Book_Library;
 
-import Archive_Superklass.Archive;
+import MediaArchive.Archive;
 
-public class Bibliotek extends Archive {
+public class Library extends Archive {
     private final String author;
 
-    public Bibliotek(String title, String author, String genre, String language, String format) {
+    public Library(String title, String author, String genre, String language, String format) {
         super(title, genre, language, format);
         this.author = author;
     }

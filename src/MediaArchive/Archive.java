@@ -1,4 +1,4 @@
-package Archive_Superklass;
+package MediaArchive;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -21,13 +21,13 @@ public class Archive {
         this.format = format;
     }
 
-    public static void addBibliotek(Archive bibliotek) {
+    public static void addLibary(Archive bibliotek) {
         if (bibliotek != null) {
             samling.add(bibliotek);
         }
     }
 
-    public static void saveBibliotek(String filename) {
+    public static void saveLibary(String filename) {
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(filename, true)))) {
             for (Archive bibliotek : samling) {
                 out.println(bibliotek.title + "; "

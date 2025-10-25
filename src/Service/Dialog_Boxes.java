@@ -13,25 +13,26 @@ public class Dialog_Boxes {
             if (!userInput.isEmpty()) {
                 return userInput;
             }
-            JOptionPane.showMessageDialog(null, Dialogtext.EMPTY,
+            outputMessage( Dialogtext.EMPTY,
                     Dialogtext.TITLEEMPTY, JOptionPane.ERROR_MESSAGE);
         }
     }
     //För framtiden, kommer fortsätta jobba på detta
-    public static void outputMessage (String message){
-        JOptionPane.showMessageDialog(null,message);
+    public static void outputMessage (String message, String title, int messageType){
+
+        JOptionPane.showMessageDialog(null, message, title, messageType);
     }
 
-    public static String category(String[] CHOICES) {
+    public static String ShowDropDown(String title, String prompt, String [] choices) {
         JFrame frame = new JFrame();
         Object result = JOptionPane.showInputDialog(
                 frame,
-                Dialogtext.WHICHCATEGORI,
-                Dialogtext.TITLECATEGORI,
+                prompt,
+                title,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
-                Dialogtext.CHOICES,
-                Dialogtext.CHOICES[0]);
+                choices,
+                choices[0]);
 
         return (result == null) ? null : result.toString();
     }

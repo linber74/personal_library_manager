@@ -1,6 +1,6 @@
-package Archive_Superklass.Film_Bibliotek;
+package MediaArchive.Film_Libary;
 
-public class Film extends Film_Bibliotek {
+public class Film extends Film_Libary {
 
     private String movie = "Film";
 
