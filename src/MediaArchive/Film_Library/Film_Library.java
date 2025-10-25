@@ -1,4 +1,4 @@
-package MediaArchive.Film_Libary;
+package MediaArchive.Film_Library;
 
 import MediaArchive.Archive;
 
