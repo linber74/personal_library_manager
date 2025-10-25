@@ -19,12 +19,12 @@ public class Dialogtext {
     protected static final String TITLECATEGORI =  "KATEGORI";
     protected static final String TITLEBOOK =  "BOK";
     protected static final String TITLEFILM =  "FILM";
+    protected static final String TITLEGAME =  "SPEL";
     public static final String TITLEEMPTY = "FEL";
 
     //Val
     public static final String[] CHOICES = {"Bok", "Film", "Spel"};
-    protected static final String[] BOOKFORMAT = {"Hardcover", "Paperback"};
-    protected static final String[] EBOOKFORMAT = {"E-bok", "Fanfiction" };
+    protected static final String[] BOOKFORMAT = {"Hardcover", "Paperback", "Ljudbok", "E-bok", "Fanfiction"};
     protected static final String[] FILMFORMAT = {"Offlinefilm", "DVD", "Blueray"};
 
     protected static final String BOOK = "Bok";
