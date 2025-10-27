@@ -14,7 +14,7 @@ public class Dialog_Boxes {
                 return userInput;
             }
             outputMessage( Dialogtext.EMPTY,
-                    Dialogtext.TITLEEMPTY, JOptionPane.ERROR_MESSAGE);
+                    Dialogtext.TITLEWRONG, JOptionPane.ERROR_MESSAGE);
         }
     }
     //För framtiden, kommer fortsätta jobba på detta

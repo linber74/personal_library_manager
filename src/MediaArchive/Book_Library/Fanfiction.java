@@ -1,6 +1,6 @@
 package MediaArchive.Book_Library;
 
-public class Fanfiction extends Library{
+public class Fanfiction extends Library {
 
     private final String type;
 

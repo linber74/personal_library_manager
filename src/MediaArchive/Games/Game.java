@@ -1,6 +1,6 @@
 package MediaArchive.Games;
 
-import MediaArchive.Archive;
+import Archive_Superklass.Archive;
 
 public class Game extends Archive {
 

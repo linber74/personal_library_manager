@@ -1,6 +1,6 @@
 package MediaArchive.Book_Library;
 
-import MediaArchive.Archive;
+import Archive_Superklass.Archive;
 
 public class Library extends Archive {
     private final String author;

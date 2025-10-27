@@ -1,6 +1,6 @@
 package MediaArchive.Film_Library;
 
-import MediaArchive.Archive;
+import Archive_Superklass.Archive;
 
 public class Film_Library extends Archive {
 

@@ -20,7 +20,7 @@ public class Dialogtext {
     protected static final String TITLEBOOK =  "BOK";
     protected static final String TITLEFILM =  "FILM";
     protected static final String TITLEGAME =  "SPEL";
-    public static final String TITLEEMPTY = "FEL";
+    public static final String TITLEWRONG= "FEL";
 
     //Val
     public static final String[] CHOICES = {"Bok", "Film", "Spel"};
@@ -40,5 +40,7 @@ public class Dialogtext {
 
 
     //Fel eller tomt
-    protected static final String EMPTY = "Fyll i eller avsluta";
+    protected static final String EMPTY = "Fyll i eller avsluta!";
+    protected static final String NOFILE = "Ingen fil hittades!";
+    protected static final String WRONG = "Något gick fel!";
 }
