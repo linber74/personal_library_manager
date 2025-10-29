@@ -2,7 +2,8 @@ package MediaArchive.Book_Library;
 
 public class Books extends Library {
 
-    public Books(String title, String author, String genre, String language, String format) {
-        super(title, author, genre, language, format);
+    public Books(String title, String author, String genre, String language, String format, String bookType,
+                 boolean seriesOrNot, String serieName, String serieNumber) {
+        super(title, author, genre, language, format, bookType, seriesOrNot, serieName, serieNumber);
     }
 }
