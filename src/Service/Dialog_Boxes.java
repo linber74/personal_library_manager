@@ -6,17 +6,25 @@ public class Dialog_Boxes {
     public static String input(String message) {
         while (true) {
             String userInput = JOptionPane.showInputDialog(message);
-            if (userInput == null) {
-                return null;
+            if (userInput == null || userInput.isEmpty()) {
+                outputMessage( Dialogtext.EMPTY,
+                        Dialogtext.TITLEWRONG, JOptionPane.ERROR_MESSAGE);
             }
-            userInput = userInput.trim();
-            if (!userInput.isEmpty()) {
-                return userInput;
+
+            String [] words = userInput.split("\\s+");
+            StringBuilder builder = new StringBuilder();
+
+            for (String word : words) {
+                if (!word.isEmpty()) {
+                    String firstLetter = word.substring(0, 1).toUpperCase();
+                    String rest = word.substring(1);
+                    builder.append(firstLetter).append(rest).append(" ");
+                }
             }
-            outputMessage( Dialogtext.EMPTY,
-                    Dialogtext.TITLEWRONG, JOptionPane.ERROR_MESSAGE);
+            return builder.toString().trim();
         }
     }
+
     //För framtiden, kommer fortsätta jobba på detta
     public static void outputMessage (String message, String title, int messageType){
 

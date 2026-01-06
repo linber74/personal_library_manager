@@ -1,4 +1,4 @@
-package MediaArchive.Games;
+package MediaArchive.Games_Library;
 
 import Archive_Superklass.Archive;
 
