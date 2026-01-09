@@ -1,8 +1,8 @@
-package Service;
+package ui;
 
 import javax.swing.*;
 
-public class Dialog_Boxes {
+public class LibraryUI {
     public static String input(String message) {
         while (true) {
             String userInput = JOptionPane.showInputDialog(message);

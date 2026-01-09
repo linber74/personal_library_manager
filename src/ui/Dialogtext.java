@@ -1,4 +1,4 @@
-package Service;
+package ui;
 
 public class Dialogtext {
 
@@ -41,6 +41,6 @@ public class Dialogtext {
 
     //Fel eller tomt
     protected static final String EMPTY = "Fyll i eller avsluta!";
-    protected static final String NOFILE = "Ingen fil hittades!";
-    protected static final String WRONG = "Något gick fel!";
+    public static final String NOFILE = "Ingen fil hittades!";
+    public static final String WRONG = "Något gick fel!";
 }

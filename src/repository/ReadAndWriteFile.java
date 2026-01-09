@@ -1,9 +1,9 @@
-package Service;
+package repository;
 
 import java.io.*;
 
-import static Service.Dialog_Boxes.outputMessage;
-import static Service.Dialogtext.*;
+import static ui.LibraryUI.outputMessage;
+import static ui.Dialogtext.*;
 
 
 import javax.swing.*;
