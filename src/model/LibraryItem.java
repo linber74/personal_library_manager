@@ -1,49 +1,53 @@
 package model;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
+
 
 abstract class LibraryItem {
+    private  int itemId;
+    private ItemType itemType;
     private final String title;
     private final String genre;
     private final String language;
-    protected final String format;
-    protected boolean seriesOrNot;
-    protected String serieName;
-    protected String serieNumber;
+    private final SeriesInfo serieInfo;
 
-    private static final ArrayList<LibraryItem> samling = new ArrayList<>();
-
-    public LibraryItem(String title, String genre, String language, String format, boolean seriesOrNot, String serieName, String serieNumber) {
+    public LibraryItem(String title, String genre, String language, SeriesInfo serieInfo, int itemId, ItemType itemType) {
         this.title = title;
         this.genre = genre;
         this.language = language;
-        this.format = format;
-        this.seriesOrNot = seriesOrNot;
-        this.serieName = serieName;
-        this.serieNumber = serieNumber;
+        this.serieInfo = serieInfo;
+        this.itemId = itemId;
+        this.itemType = itemType;
     }
 
-    public static void addLibary(LibraryItem bibliotek) {
-        if (bibliotek != null) {
-            samling.add(bibliotek);
-        }
+    public int getItemId() {
+        return itemId;
     }
 
-    public static void saveLibary(String filename) {
-        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(filename, true)))) {
-            for (LibraryItem bibliotek : samling) {
-                out.println(bibliotek.title + "; "
-                        + bibliotek.genre + "; "
-                        + bibliotek.language + "; "
-                        + bibliotek.format);
-            }
-        } catch (IOException e) {
-            System.out.println("Fel spara Bibliotek" + e.getMessage());
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
+    }
 
-        }
+    public ItemType getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(ItemType itemType) {
+        this.itemType = itemType;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public SeriesInfo getSerieInfo() {
+        return serieInfo;
     }
 }
