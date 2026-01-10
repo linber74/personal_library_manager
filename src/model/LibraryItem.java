@@ -3,36 +3,29 @@ package model;
 
 
 abstract class LibraryItem {
-    private  int itemId;
-    private ItemType itemType;
+    private final String itemId;
+    private final ItemType itemType;
+
     private String title;
     private String genre;
     private  String language;
-    private  SeriesInfo serieInfo;
+    private  SeriesInfo seriesInfo;
 
-    public LibraryItem(String title, String genre, String language, SeriesInfo serieInfo, int itemId, ItemType itemType) {
+    public LibraryItem(String itemId, ItemType itemType, String title, String genre, String language, SeriesInfo seriesInfo) {
+        this.itemId = itemId;
+        this.itemType = itemType;
         this.title = title;
         this.genre = genre;
         this.language = language;
-        this.serieInfo = serieInfo;
-        this.itemId = itemId;
-        this.itemType = itemType;
+        this.seriesInfo = seriesInfo;
     }
 
-    public int getItemId() {
+    public String getItemId() {
         return itemId;
-    }
-
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
     }
 
     public ItemType getItemType() {
         return itemType;
-    }
-
-    public void setItemType(ItemType itemType) {
-        this.itemType = itemType;
     }
 
     public String getTitle() {
@@ -47,13 +40,14 @@ abstract class LibraryItem {
         return language;
     }
 
-    public SeriesInfo getSerieInfo() {
-        return serieInfo;
+    public SeriesInfo getSeriesInfo() {
+        return seriesInfo;
     }
 
     public  void setTitle(String title) {
         this.title = title;
     }
+
     public  void setGenre(String genre) {
         this.genre = genre;
     }
@@ -61,12 +55,18 @@ abstract class LibraryItem {
     public  void setLanguage(String language) {
         this.language = language;
     }
-    public  void setSerieInfo(SeriesInfo serieInfo) {
-        this.serieInfo = serieInfo;
+
+    public  void setSeriesInfo(SeriesInfo serieInfo) {
+        this.seriesInfo = serieInfo;
     }
 
     @Override
     public String toString(){
-        return toString();
+    // kort, UI-vänlig sammanfattning
+        String base = "[" + itemType + "] " + title + " (" + language + ")";
+        if (seriesInfo != null) {
+            base += " - " + seriesInfo;
+        }
+        return base;
     }
 }
