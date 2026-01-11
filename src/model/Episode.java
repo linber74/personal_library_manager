@@ -18,9 +18,11 @@ public class Episode {
     public int getEpisodeNumber() {
         return episodeNumber;
     }
+
     public String getEpisodeName() {
         return episodeName;
     }
+
     @Override
     public String toString() {
         if (episodeName == null || episodeName.isBlank()) {

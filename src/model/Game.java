@@ -2,7 +2,20 @@ package model;
 
 public class Game extends LibraryItem {
 
-    public Game(String title, String genre, String language, SeriesInfo serieInfo, int itemId, ItemType itemType) {
-        super(title, genre, language, serieInfo, itemId, itemType);
+   private final String creator;
+
+    public Game(String itemId, String title, String genre, String language, SeriesInfo seriesInfo, String creator) {
+        super(itemId, ItemType.GAME, title, genre, language, seriesInfo);
+        this.creator = creator;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    // TODO: Adjust toString() when final output format is decided.
+    @Override
+    public String toString() {
+        return creator;
     }
 }
