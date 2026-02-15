@@ -1,4 +1,10 @@
 package repository;
 
-public class LibraryRepository {
+import model.LibraryItem;
+
+import java.util.List;
+
+public interface LibraryRepository {
+
+
 }

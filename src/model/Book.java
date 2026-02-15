@@ -1,14 +1,16 @@
 package model;
 
+import java.util.List;
+
 public class Book extends LibraryItem {
 
-    private final String author;
+    private final List<String> author;
     private final BookFormat bookFormat;
     private final String fandom;
     private final FanficType fanficType;
 
     public Book(String itemId, String title, String genre, String language,
-                SeriesInfo seriesInfo, String author, BookFormat bookFormat,FanficType fanficType, String fandom) {
+                SeriesInfo seriesInfo, List<String> author, BookFormat bookFormat,FanficType fanficType, String fandom) {
         super(itemId, ItemType.BOOK, title, genre, language, seriesInfo);
         this.author = author;
         this.bookFormat = bookFormat;
@@ -22,9 +24,10 @@ public class Book extends LibraryItem {
 
     }
 
-    public String getAuthor() {
+    public List<String> getAuthor() {
         return author;
     }
+
     public BookFormat getBookFormat() {
         return bookFormat;
     }

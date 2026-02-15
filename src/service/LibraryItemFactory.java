@@ -25,13 +25,17 @@ public class LibraryItemFactory {
        return new Game(id, title, genre, language, seriesInfo, creator);
     }
 
-    public Book createBook(String title, String genre, String language, SeriesInfo seriesInfo, String author,
+    public Book createBook(String title, String genre, String language, SeriesInfo seriesInfo, List <String> author,
                            BookFormat bookFormat, FanficType fanficType, String fandom) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title cannot be null or blank");
         }
-        if (author == null || author.isBlank()) {
-            throw new IllegalArgumentException("Author cannot be null or blank");
+        List<String> safeauthors;
+        if (author == null) {
+            List<String>safeactors = new ArrayList<>();
+        }
+        else{
+            List<String> safeauthor = new ArrayList<>(author);
         }
         if (bookFormat == null) {
             throw new IllegalArgumentException("BookFormat cannot be null");
@@ -48,7 +52,7 @@ public class LibraryItemFactory {
         }
 
         String id = generateId();
-        return new Book(id, title, genre, language, seriesInfo, author, bookFormat, fanficType, fandom);
+        return new Book(id, title, genre, language, seriesInfo, List<String>safeauthors, bookFormat, fanficType, fandom);
     }
 
     public Film createFilm (String title, String genre, String language, SeriesInfo seriesInfo, String director,

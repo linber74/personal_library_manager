@@ -1,18 +1,17 @@
 package service;
 
-import model.LibraryItem;
-import repository.LibraryRepository;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LibraryService {
 
-    private final LibraryRepository repository;
+    private final Object repository;
     private final LibraryItemFactory factory;
     private final List<LibraryItem> items;
 
-    public LibraryService(LibraryRepository repository, LibraryItemFactory factory) {
+    public LibraryService(Object repository, LibraryItemFactory factory) {
         if (repository == null) {
             throw new IllegalArgumentException("repository cannot be null");
         }
@@ -61,5 +60,37 @@ public class LibraryService {
             repository.save(items);
         }
         return removed;
+    }
+
+    public Game addGame (String title, String genre, String language, SeriesInfo seriesInfo, String creator) {
+
+        Game game = factory.createGame( title, genre, language, seriesInfo, creator);
+        addItem(game);
+        return game;
+    }
+
+    public Book addBook(String title, String genre, String language, SeriesInfo seriesInfo, List<String> author,
+                        BookFormat bookFormat, FanficType fanficType, String fandom) {
+
+        Book book = factory.createBook(title, genre, language, seriesInfo, author, bookFormat, fanficType, fandom);
+        addItem(book);
+        return book;
+    }
+
+    public Film addFilm (String title, String genre, String language, SeriesInfo seriesInfo, String director,
+                         List<String> actors, MediaFormat mediaFormat, FilmType filmType, TranslationInfo translationInfo) {
+
+        Film film = factory.createFilm(title, genre, language, seriesInfo, director, actors, mediaFormat, filmType, translationInfo);
+        addItem(film);
+        return film;
+    }
+
+    public TVSeries addTVSeries (String title, String genre, String language, SeriesInfo seriesInfo, String director,
+                                 List<String> actors, MediaFormat mediaFormat,
+                                 TranslationInfo translationInfo, List<Season> seasons) {
+
+        TVSeries tvSeries = factory.createTVSeries(title, genre, language, seriesInfo, director, actors, mediaFormat, translationInfo, seasons);
+        addItem(tvSeries);
+        return tvSeries;
     }
 }
