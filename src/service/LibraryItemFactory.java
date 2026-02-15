@@ -54,17 +54,7 @@ public class LibraryItemFactory {
     public Film createFilm (String title, String genre, String language, SeriesInfo seriesInfo, String director,
                            List<String> actors, MediaFormat mediaFormat, FilmType filmType, TranslationInfo translationInfo) {
 
-        if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("Title cannot be null or blank");
-        }
-
-        if (director == null || director.isBlank()) {
-            throw new IllegalArgumentException("Director cannot be null or blank");
-        }
-
-        if (mediaFormat == null) {
-            throw new IllegalArgumentException("MediaFormat cannot be null");
-        }
+        movieTv(title, director, mediaFormat);
 
         if (filmType == null) {
             throw new IllegalArgumentException("FilmType cannot be null");
@@ -82,10 +72,7 @@ public class LibraryItemFactory {
         return new Film(id, title, genre, language, seriesInfo, director, safeActors, mediaFormat, filmType, translationInfo);
     }
 
-    public TVSeries createTVSeries (String title, String genre, String language, SeriesInfo seriesInfo, String director,
-                                    List<String> actors, MediaFormat mediaFormat,
-                                    TranslationInfo translationInfo, List<Season> seasons) {
-
+    private void movieTv(String title, String director, MediaFormat mediaFormat) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title cannot be null or blank");
         }
@@ -93,9 +80,17 @@ public class LibraryItemFactory {
         if (director == null || director.isBlank()) {
             throw new IllegalArgumentException("Director cannot be null or blank");
         }
+
         if (mediaFormat == null) {
             throw new IllegalArgumentException("MediaFormat cannot be null");
         }
+    }
+
+    public TVSeries createTVSeries (String title, String genre, String language, SeriesInfo seriesInfo, String director,
+                                    List<String> actors, MediaFormat mediaFormat,
+                                    TranslationInfo translationInfo, List<Season> seasons) {
+
+        movieTv(title, director, mediaFormat);
 
         List<String> safeActors;
         if (actors == null) {
