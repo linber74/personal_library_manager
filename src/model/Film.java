@@ -11,7 +11,7 @@ public class Film extends LibraryItem {
     private final FilmType filmType;
     private final TranslationInfo translationInfo;
 
-    public Film(String itemId, String title, String genre, String language, SeriesInfo seriesInfo,
+    public Film(int itemId, String title, String genre, String language, SeriesInfo seriesInfo,
                 String director, List<String>actors, MediaFormat mediaFormat, FilmType filmType, TranslationInfo translationInfo) {
         super(itemId, ItemType.FILM, title, genre, language, seriesInfo);
         this.director = director;

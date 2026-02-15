@@ -3,7 +3,7 @@ package model;
 
 
 public abstract class LibraryItem {
-    private final String itemId;
+    private final int itemId;
     private final ItemType itemType;
 
     private String title;
@@ -11,7 +11,7 @@ public abstract class LibraryItem {
     private  String language;
     private  SeriesInfo seriesInfo;
 
-    public LibraryItem(String itemId, ItemType itemType, String title, String genre, String language, SeriesInfo seriesInfo) {
+    public LibraryItem(int itemId, ItemType itemType, String title, String genre, String language, SeriesInfo seriesInfo) {
         this.itemId = itemId;
         this.itemType = itemType;
         this.title = title;
@@ -20,7 +20,8 @@ public abstract class LibraryItem {
         this.seriesInfo = seriesInfo;
     }
 
-    public String getItemId() {
+
+    public int getItemId() {
         return itemId;
     }
 

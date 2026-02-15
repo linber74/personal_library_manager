@@ -9,7 +9,7 @@ public class Book extends LibraryItem {
     private final String fandom;
     private final FanficType fanficType;
 
-    public Book(String itemId, String title, String genre, String language,
+    public Book(int itemId, String title, String genre, String language,
                 SeriesInfo seriesInfo, List<String> author, BookFormat bookFormat,FanficType fanficType, String fandom) {
         super(itemId, ItemType.BOOK, title, genre, language, seriesInfo);
         this.author = author;

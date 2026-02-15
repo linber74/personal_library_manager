@@ -4,14 +4,11 @@ import model.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class LibraryItemFactory {
 
 
-    private String generateId() {
-        return UUID.randomUUID().toString();
-    }
+
 
     public Game createGame(String title, String genre, String language, SeriesInfo seriesInfo, String creator) {
         if (title == null || title.isBlank()) {
@@ -21,7 +18,7 @@ public class LibraryItemFactory {
             throw new IllegalArgumentException("Creator cannot be null or blank");
         }
 
-       String id = generateId();
+
        return new Game(id, title, genre, language, seriesInfo, creator);
     }
 
@@ -30,12 +27,12 @@ public class LibraryItemFactory {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title cannot be null or blank");
         }
-        List<String> safeauthors;
+        List<String> safeAuthors;
         if (author == null) {
-            List<String>safeactors = new ArrayList<>();
+            safeAuthors = new ArrayList<>();
         }
         else{
-            List<String> safeauthor = new ArrayList<>(author);
+            safeAuthors = new ArrayList<>(author);
         }
         if (bookFormat == null) {
             throw new IllegalArgumentException("BookFormat cannot be null");
@@ -51,8 +48,8 @@ public class LibraryItemFactory {
             }
         }
 
-        String id = generateId();
-        return new Book(id, title, genre, language, seriesInfo, List<String>safeauthors, bookFormat, fanficType, fandom);
+
+        return new Book(id, title, genre, language, seriesInfo, safeAuthors, bookFormat, fanficType, fandom);
     }
 
     public Film createFilm (String title, String genre, String language, SeriesInfo seriesInfo, String director,
@@ -82,7 +79,6 @@ public class LibraryItemFactory {
             safeActors = new ArrayList<>(actors);
         }
 
-        String id = generateId();
 
         return new Film(id, title, genre, language, seriesInfo, director, safeActors, mediaFormat, filmType, translationInfo);
     }
@@ -118,7 +114,6 @@ public class LibraryItemFactory {
             safeSeasons = new ArrayList<>( seasons);
         }
 
-        String id = generateId();
 
         return new TVSeries(id, title, genre, language, seriesInfo, director, safeActors, mediaFormat, translationInfo, safeSeasons);
 

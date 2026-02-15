@@ -3,13 +3,13 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TVSeries extends Film {
+public class TVSeries extends LibraryItem{
 
     private final List<Season> seasons;
 
-    public TVSeries(String itemId, String title, String genre, String language, SeriesInfo seriesInfo, String director,
-                    List<String> actors, MediaFormat mediaFormat, TranslationInfo translationInfo, List<Season> seasons) {
-        super(itemId,  title, genre, language, seriesInfo, director, actors, mediaFormat, FilmType.TV_SERIES, translationInfo);
+    public TVSeries(int itemId, String title, String genre, String language, SeriesInfo seriesInfo, Film director,
+                    List<String> actors, MediaFormat mediaFormat, ItemType itemType, TranslationInfo translationInfo, List<Season> seasons) {
+        super(itemId, ItemType.TV_SERIES, title, genre, language, seriesInfo );
 
         if (seasons == null) {
             this.seasons = new ArrayList<>();

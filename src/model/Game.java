@@ -4,7 +4,7 @@ public class Game extends LibraryItem {
 
    private final String creator;
 
-    public Game(String itemId, String title, String genre, String language, SeriesInfo seriesInfo, String creator) {
+    public Game(int itemId, String title, String genre, String language, SeriesInfo seriesInfo, String creator) {
         super(itemId, ItemType.GAME, title, genre, language, seriesInfo);
         this.creator = creator;
     }

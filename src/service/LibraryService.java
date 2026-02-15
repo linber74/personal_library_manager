@@ -1,17 +1,18 @@
 package service;
 
 import model.*;
+import repository.LibraryRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LibraryService {
 
-    private final Object repository;
+    private final LibraryRepository repository;
     private final LibraryItemFactory factory;
     private final List<LibraryItem> items;
 
-    public LibraryService(Object repository, LibraryItemFactory factory) {
+    public LibraryService(LibraryRepository repository, LibraryItemFactory factory) {
         if (repository == null) {
             throw new IllegalArgumentException("repository cannot be null");
         }
@@ -37,24 +38,24 @@ public class LibraryService {
         return new ArrayList<>(items);
     }
 
-    public LibraryItem getById (String itemId) {
+    public LibraryItem getById (int itemId) {
 
-        if (itemId == null || itemId.isBlank()) {
+        if (itemId <= 0) {
             return null;
         }
         for (LibraryItem item : items) {
-            if (itemId.equals(item.getItemId())) {
+            if (itemId == item.getItemId()){
                 return item;
             }
         }
         return  null;
     }
 
-    public boolean removeById (String itemId) {
-        if (itemId == null || itemId.isBlank()) {
+    public boolean removeById (int itemId) {
+        if (itemId <= 0) {
             return false;
         }
-        boolean removed = items.removeIf(item -> itemId.equals(item.getItemId()));
+        boolean removed = items.removeIf(item -> itemId == item.getItemId());
 
         if (removed) {
             repository.save(items);

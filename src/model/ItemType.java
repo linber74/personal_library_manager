@@ -4,6 +4,7 @@ public enum ItemType {
 
     BOOK ("Bok"),
     FILM ("Film"),
+    TV_SERIES ("Tv Series"),
     GAME ("Spel");
 
     public final String type;
