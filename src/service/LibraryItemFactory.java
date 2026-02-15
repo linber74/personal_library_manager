@@ -7,8 +7,7 @@ import java.util.List;
 
 public class LibraryItemFactory {
 
-
-
+    private final int id = 0;
 
     public Game createGame(String title, String genre, String language, SeriesInfo seriesInfo, String creator) {
         if (title == null || title.isBlank()) {
