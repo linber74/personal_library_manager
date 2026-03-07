@@ -1,17 +1,18 @@
 package model;
 
 
+import java.util.List;
 
 public abstract class LibraryItem {
     private final int itemId;
     private final ItemType itemType;
 
     private String title;
-    private String genre;
+    private List<String> genre;
     private  String language;
     private  SeriesInfo seriesInfo;
 
-    public LibraryItem(int itemId, ItemType itemType, String title, String genre, String language, SeriesInfo seriesInfo) {
+    public LibraryItem(int itemId, ItemType itemType, String title, List<String> genre, String language, SeriesInfo seriesInfo) {
         this.itemId = itemId;
         this.itemType = itemType;
         this.title = title;
@@ -33,7 +34,7 @@ public abstract class LibraryItem {
         return title;
     }
 
-    public String getGenre() {
+    public List<String> getGenre() {
         return genre;
     }
 
@@ -49,7 +50,7 @@ public abstract class LibraryItem {
         this.title = title;
     }
 
-    public  void setGenre(String genre) {
+    public  void setGenre(List<String> genre) {
         this.genre = genre;
     }
 

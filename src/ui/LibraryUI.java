@@ -9,7 +9,9 @@ public class LibraryUI {
             if (userInput == null || userInput.isEmpty()) {
                 outputMessage( Dialogtext.EMPTY,
                         Dialogtext.TITLEWRONG, JOptionPane.ERROR_MESSAGE);
+                continue;
             }
+
 
             String [] words = userInput.split("\\s+");
             StringBuilder builder = new StringBuilder();

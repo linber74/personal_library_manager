@@ -9,7 +9,7 @@ public class LibraryItemFactory {
 
     private final int id = 0;
 
-    public Game createGame(String title, String genre, String language, SeriesInfo seriesInfo, String creator) {
+    public Game createGame(String title, List<String> genre, String language, SeriesInfo seriesInfo, String creator) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title cannot be null or blank");
         }
@@ -21,8 +21,8 @@ public class LibraryItemFactory {
        return new Game(id, title, genre, language, seriesInfo, creator);
     }
 
-    public Book createBook(String title, String genre, String language, SeriesInfo seriesInfo, List <String> author,
-                           BookFormat bookFormat, FanficType fanficType, String fandom) {
+    public Book createBook(String title, List<String> genre, String language, SeriesInfo seriesInfo, List <String> author,
+                           BookFormat bookFormat, FanficType fanficType, List<String> fandom) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title cannot be null or blank");
         }
@@ -40,7 +40,7 @@ public class LibraryItemFactory {
             if (fanficType == null) {
                 throw new IllegalArgumentException("FanficType cannot be null");
             } else if (fanficType != FanficType.ORIGINAL) {
-                if (fandom == null ||  fandom.isBlank()) {
+                if (fandom == null ||  fandom.isEmpty()) {
                     throw new IllegalArgumentException("Fandom cannot be null or blank");
                 }
                 
@@ -51,7 +51,7 @@ public class LibraryItemFactory {
         return new Book(id, title, genre, language, seriesInfo, safeAuthors, bookFormat, fanficType, fandom);
     }
 
-    public Film createFilm (String title, String genre, String language, SeriesInfo seriesInfo, String director,
+    public Film createFilm (String title, List<String> genre, String language, SeriesInfo seriesInfo, String director,
                            List<String> actors, MediaFormat mediaFormat, FilmType filmType, TranslationInfo translationInfo) {
 
         movieTv(title, director, mediaFormat);
@@ -86,7 +86,7 @@ public class LibraryItemFactory {
         }
     }
 
-    public TVSeries createTVSeries (String title, String genre, String language, SeriesInfo seriesInfo, String director,
+    public TVSeries createTVSeries (String title, List<String> genre, String language, SeriesInfo seriesInfo, String director,
                                     List<String> actors, MediaFormat mediaFormat,
                                     TranslationInfo translationInfo, List<Season> seasons) {
 

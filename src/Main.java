@@ -1,13 +1,13 @@
+import repository.ConnectionManager;
+import repository.DatabaseRepository;
 
+import static java.lang.IO.println;
 
 
 void main() {
-
-
-
-
-//    while (true) {
-//
-//            Libary.saveLibary("Bibliotek.txt");
-//    }
+    ConnectionManager cm = new ConnectionManager();
+    DatabaseRepository data = new DatabaseRepository(cm);
+    //data.addGenre("Fantasy");
+    //data.removeGenre("Fantasy");
+    //println(data.getAllGenres());
 }

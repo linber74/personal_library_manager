@@ -15,7 +15,8 @@ create table filmType
 (type VARCHAR (50) not null primary key);
 
 create table seriesInfo
-(seriesName VARCHAR (50) not null primary key);
+(seriesName VARCHAR (50) not null primary key,
+ partNumber INT not null);
 
 create table bookFormat
 (bFormat VARCHAR (50) not null primary key);
@@ -36,12 +37,10 @@ create table libraryitem
 (itemId int not null auto_increment primary key,
 title VARCHAR (100) not null,
 itemType VARCHAR (50) not null,
-genre VARCHAR (50) not null,
 language VARCHAR (50) not null,
 seriesName VARCHAR (50) null,
 foreign key (itemType) references itemType (type),
 foreign key (seriesName) references seriesInfo (seriesName),
-foreign key (genre) references genre (genre),
 foreign key (language) references language (language));
 
 
@@ -59,14 +58,11 @@ foreign key  (translationInfo) references translationInfo (translationTypeOrLang
 
 create table book 
 (itemId int not null primary key,
-fandom VARCHAR (100) null,
 fanficType VARCHAR (50) null,
 bookFormat VARCHAR (50) not null,
 foreign key (itemId) references libraryitem (itemId),
 foreign key (fanficType) references fanficType (type),
-foreign key (bookFormat) references bookFormat (bformat),
-foreign key (fandom) references fandom (fandom));
-
+foreign key (bookFormat) references bookFormat (bformat));
 
 create table game
 (itemId int not null primary key,
@@ -82,7 +78,6 @@ create table film_actors
 actorName Varchar (50) not null,
 primary key (filmId, actorName),
 foreign key (filmId) references film (ItemId));
-
 
 CREATE TABLE Book_Authors
 (bookId INT NOT NULL,
@@ -103,13 +98,42 @@ CREATE TABLE Book_Authors
   episodeName VARCHAR (50) null,
   primary key (tvseriesId, seasonNumber, episodeNumber),
   foreign key (tvseriesId, seasonNumber) references season (tvseriesId, seasonNumber));
+
+CREATE TABLE item_genres
+(itemId INT NOT NULL,
+ genre VARCHAR(50) NOT NULL,
+ PRIMARY KEY (itemId, genre),
+ FOREIGN KEY (itemId) REFERENCES libraryitem(itemId),
+ FOREIGN KEY (genre) REFERENCES genre(genre));
+
+CREATE TABLE book_fandoms
+(bookId INT NOT NULL,
+ fandom VARCHAR(100) NOT NULL,
+ PRIMARY KEY (bookId, fandom),
+ FOREIGN KEY (bookId) REFERENCES book(itemId),
+ FOREIGN KEY (fandom) REFERENCES fandom(fandom));
+
+insert into itemType (type)
+values ('Bok'), ('Film'), ('Spel'), ('TV-serie');
+
+insert into filmType (type)
+values ('Film'), ('TV-serie'), ('Annat');
+
+insert into mediaFormat (format)
+values ('Digitalt'), ('DVD'), ('Blu-ray');
+
+insert into bookFormat (bFormat)
+values ('Bok'), ('Ebook'), ('Ljudbok'), ('Fanfiction');
+
+insert into fanficType (type)
+values ('Canon'), ('AU'), ('Über'), ('Original/Okänt');
   
 SELECT * FROM itemType;
 SELECT * FROM mediaFormat;
 SELECT * FROM fanficType;
 SELECT * FROM filmType;
-SELECT * FROM seriesInfo;
 SELECT * FROM bookFormat;
+SELECT * FROM seriesInfo;
 SELECT * FROM translationInfo;
 SELECT * FROM libraryitem;
 SELECT * FROM film;
@@ -123,3 +147,5 @@ SELECT * FROM episode;
 SELECT * FROM fandom;
 SELECT * FROM genre;
 SELECT * FROM language;
+SELECT * FROM item_genres;
+SELECT * FROM book_fandoms;

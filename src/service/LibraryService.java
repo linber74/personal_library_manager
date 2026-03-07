@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import repository.DatabaseRepository;
 import repository.LibraryRepository;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class LibraryService {
         this.repository = repository;
         this.factory = factory;
 
-        List<LibraryItem> loaded = repository.load();
+        List<LibraryItem> loaded = repository.loadAll();
         this.items = (loaded != null) ? new ArrayList<>(loaded) : new ArrayList<>();
     }
 
@@ -31,7 +32,7 @@ public class LibraryService {
             throw new IllegalArgumentException("item cannot be null");
         }
         items.add(item);
-        repository.save(items);
+        repository.save(item);
     }
 
     public List<LibraryItem> getAll() {
@@ -58,27 +59,27 @@ public class LibraryService {
         boolean removed = items.removeIf(item -> itemId == item.getItemId());
 
         if (removed) {
-            repository.save(items);
+            repository.deleteById(itemId);
         }
         return removed;
     }
 
-    public Game addGame (String title, String genre, String language, SeriesInfo seriesInfo, String creator) {
+    public Game addGame (String title, List <String> genre, String language, SeriesInfo seriesInfo, String creator) {
 
         Game game = factory.createGame( title, genre, language, seriesInfo, creator);
         addItem(game);
         return game;
     }
 
-    public Book addBook(String title, String genre, String language, SeriesInfo seriesInfo, List<String> author,
-                        BookFormat bookFormat, FanficType fanficType, String fandom) {
+    public Book addBook(String title, List <String> genre, String language, SeriesInfo seriesInfo, List<String> author,
+                        BookFormat bookFormat, FanficType fanficType, List<String> fandom) {
 
         Book book = factory.createBook(title, genre, language, seriesInfo, author, bookFormat, fanficType, fandom);
         addItem(book);
         return book;
     }
 
-    public Film addFilm (String title, String genre, String language, SeriesInfo seriesInfo, String director,
+    public Film addFilm (String title, List <String> genre, String language, SeriesInfo seriesInfo, String director,
                          List<String> actors, MediaFormat mediaFormat, FilmType filmType, TranslationInfo translationInfo) {
 
         Film film = factory.createFilm(title, genre, language, seriesInfo, director, actors, mediaFormat, filmType, translationInfo);
@@ -86,12 +87,48 @@ public class LibraryService {
         return film;
     }
 
-    public TVSeries addTVSeries (String title, String genre, String language, SeriesInfo seriesInfo, String director,
+    public TVSeries addTVSeries (String title, List <String> genre, String language, SeriesInfo seriesInfo, String director,
                                  List<String> actors, MediaFormat mediaFormat,
                                  TranslationInfo translationInfo, List<Season> seasons) {
 
         TVSeries tvSeries = factory.createTVSeries(title, genre, language, seriesInfo, director, actors, mediaFormat, translationInfo, seasons);
         addItem(tvSeries);
         return tvSeries;
+    }
+    
+    public List<String> getAvailableGenre() {
+        return repository.getAllGenres();
+    }
+
+    public List<String> getAvailableLanguage() {
+        return repository.getAllLanguages();
+    }
+
+    public List<String> getAvailableFandoms() {
+        return repository.getAllFandoms();
+    }
+
+    public void addNewGenre(String genre) {
+        repository.addGenre(genre);
+    }
+
+    public void addNewLanguage(String language) {
+        repository.addLanguage(language);
+    }
+
+    public void addNewFandom(String fandom) {
+        repository.addFandom(fandom);
+    }
+
+    public void removeGenre(String genre) {
+        repository.removeGenre(genre);
+    }
+
+    public void removeLanguage(String language) {
+        repository.removeLanguage(language);
+    }
+
+    public void removeFandom(String fandom) {
+        repository.removeFandom(fandom);
     }
 }

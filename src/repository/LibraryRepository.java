@@ -6,8 +6,23 @@ import java.util.List;
 
 public interface LibraryRepository {
 
+    List<LibraryItem> loadAll();
 
-    List<LibraryItem> load();
+    LibraryItem findById(int itemId);
 
-    void save(List<LibraryItem> items);
+    void save(LibraryItem item);
+
+    boolean deleteById(int itemId);
+
+    List<String> getAllGenres();
+    List<String> getAllLanguages();
+    List<String> getAllFandoms();
+
+    void addGenre(String genre);
+    void addLanguage(String language);
+    void addFandom(String fandom);
+
+    void removeGenre(String genre);
+    void removeLanguage(String language);
+    void removeFandom(String fandom);
 }
