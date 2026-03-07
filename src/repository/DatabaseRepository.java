@@ -1,11 +1,11 @@
 package repository;
 
+import model.Book;
+import model.BookFormat;
+import model.FanficType;
 import model.LibraryItem;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +30,79 @@ public class DatabaseRepository implements LibraryRepository {
 
     @Override
     public void save(LibraryItem item) {
+        String sql = ("Insert into libraryitem (title, itemType, language, seriesName) values (?, ?, ?, ?)");
+        try(Connection conn = connectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
+            ps.setString(1, item.getTitle());
+
+            ps.setString(2, item.getItemType().toString());
+
+            ps.setString(3, item.getLanguage());
+
+            String seriesName = (item.getSeriesInfo() != null)
+                    ? item.getSeriesInfo().getSeriesName()
+                    : null;
+            ps.setString(4, seriesName );
+
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+
+            int id = 0;
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+
+            for (String genre : item.getGenre()) {
+                executeJunctionInsert("Insert into item_genres (itemId, genre) values (?, ?)", id, genre);
+            }
+
+            switch (item.getItemType()) {
+                case BOOK: {
+                    Book book = (Book) item;
+                    String bookSql = "INSERT INTO book (itemId, fanficType, bookFormat) VALUES (?, ?, ?)";
+                    try (PreparedStatement prep =  conn.prepareStatement(bookSql)){
+
+                        prep.setInt(1, id);
+
+                        if (book.getFanficType() != null) {
+                            prep.setString(2, book.getFanficType().toString());
+                        } else {
+                            prep.setNull(2, Types.VARCHAR);
+                        }
+
+                        prep.setString(3, book.getBookFormat().toString());
+
+                        prep.executeUpdate();
+
+                    }
+
+                    for (String author : book.getAuthor()) {
+                        executeJunctionInsert("Insert into book_authors (bookId, authorName) values (?, ?)", id, author);
+                    }
+                    if (book.getFandom() != null) {
+                        for (String fandom : book.getFandom()) {
+                            executeJunctionInsert("Insert into book_fandoms (bookId, fandom) values (?, ?)", id, fandom);
+                        }
+                    }
+                }
+
+                case FILM:
+                case GAME:
+                case TV_SERIES:
+            }
+
+//          else if item är Film:
+//            INSERT i film + film_actors
+//          else if item är Game:
+//            INSERT i game
+//              else if item är TVSeries:
+//            INSERT i tvseries + season + episode
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -104,6 +176,17 @@ public class DatabaseRepository implements LibraryRepository {
             stmt.setString(1, value);
             stmt.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void executeJunctionInsert (String sql, int id, String value) {
+        try (Connection conn = connectionManager.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.setString(2, value);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
