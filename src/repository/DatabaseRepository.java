@@ -1,9 +1,6 @@
 package repository;
 
-import model.Book;
-import model.BookFormat;
-import model.FanficType;
-import model.LibraryItem;
+import model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,9 +16,76 @@ public class DatabaseRepository implements LibraryRepository {
 
 
     @Override
-    public List<LibraryItem> loadAll() {
-        return List.of();
+    public List<LibraryItem> loadAll()  {
+        String sql = "Select * from libraryItem";
+        List<LibraryItem> items = new ArrayList<>();
+        try (Connection conn = connectionManager.getConnection();
+        PreparedStatement prep = conn.prepareStatement(sql);){
+
+            try(ResultSet rs = prep.executeQuery()) {
+
+                while (rs.next()) {
+                    int itemId = rs.getInt("itemId");
+                    String title = rs.getString("title");
+                    String itemType = rs.getString("itemType");
+                    String language = rs.getString("language");
+                    String seriesName = rs.getString("seriesName");
+
+                    List <String> genres = getListByIntKey(
+                            "SELECT genre FROM item_genres WHERE itemId = ?", itemId, "genre");
+
+                    SeriesInfo seriesInfo = (seriesName != null) ? new SeriesInfo(seriesName) :null;
+
+                    switch (itemType) {
+                        case "Bok":
+
+                        case "Film":
+
+                        case "TV-serie":
+
+                        case "Spel": {
+                            String gameSql =  "Select * from game where itemId = ?";
+
+                            try(PreparedStatement ps = conn.prepareStatement(gameSql)){
+                                ps.setInt(1, itemId);
+
+                                try(ResultSet gameRs = ps.executeQuery()){
+                                    if (gameRs.next()) {
+                                        String creator = gameRs.getString("creator");
+                                        Game game = new Game(itemId, title, genres, language, seriesInfo, creator);
+                                        items.add(game);
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+
+//SeriesInfo seriesInfo = (seriesName != null)
+//    ? new SeriesInfo(seriesName) : null;
+//
+// Switch på itemType-strängen
+//switch (itemType):
+//    case "Bok": hämta book-data, skapa Book
+//    case "Film": hämta film-data, skapa Film
+//    case "Spel": hämta game-data, skapa Game
+//    case "TV-serie": hämta tvseries-data, skapa TVSeries
+//
+
+                    /// / Lägg till i listan
+//items.add(item);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return items;
     }
+
+
+
+
 
     @Override
     public LibraryItem findById(int itemId) {
@@ -75,7 +139,6 @@ public class DatabaseRepository implements LibraryRepository {
                         prep.setString(3, book.getBookFormat().toString());
 
                         prep.executeUpdate();
-
                     }
 
                     for (String author : book.getAuthor()) {
@@ -88,17 +151,89 @@ public class DatabaseRepository implements LibraryRepository {
                     }
                 }
 
-                case FILM:
-                case GAME:
-                case TV_SERIES:
+                case FILM: {
+                    Film film = (Film) item;
+                    String filmSql = "Insert into film (itemId, director, filmType, mediaFormat, translationInfo) values (?, ?, ?, ?, ?)";
+
+                    try (PreparedStatement prep = conn.prepareStatement(filmSql)){
+
+                        prep.setInt(1, id);
+
+                        if (film.getDirector() != null) {
+                            prep.setString(2, film.getDirector());
+                        }else  {
+                            prep.setNull(2, Types.VARCHAR);
+                        }
+
+                        prep.setString(3, film.getFilmType().toString());
+
+                        prep.setString(4, film.getMediaFormat().toString());
+
+                        if (film.getTranslationInfo() != null) {
+                            prep.setString(5, film.getTranslationInfo().toString());
+                        } else {
+                            prep.setNull(5, Types.VARCHAR);
+                        }
+                        prep.executeUpdate();
+                    }
+
+                    for (String actor : film.getActors()) {
+                        executeJunctionInsert("Insert into film_actors (filmId, actorName) values (?, ?)", id, actor);
+                    }
+                }
+
+                case GAME: {
+                    Game game = (Game) item;
+                    String gameSql = "Insert into game (itemId, creator)  values (?, ?)";
+
+                    try (PreparedStatement prep = conn.prepareStatement(gameSql)){
+                        prep.setInt(1, id);
+
+                        if (game.getCreator() != null) {
+                            prep.setString(2, game.getCreator());
+                        } else {
+                            prep.setNull(2, Types.VARCHAR);
+                        }
+                        prep.executeUpdate();
+                    }
+                }
+
+                case TV_SERIES: {
+                    TVSeries tvseries = (TVSeries) item;
+                    String seriesSql = "Insert into tvseries (itemId) values (?)";
+
+                    try (PreparedStatement prep = conn.prepareStatement(seriesSql)){
+                        prep.setInt(1, id);
+                        prep.executeUpdate();
+                    }
+
+                    String seasonSql =  "Insert into season (tvseriesId, seasonNumber) values (?, ?)";
+                    String episodeSql  = "Insert into episode (tvseriesId, seasonNumber, episodeNumber, episodeName) values (?, ?, ?, ?)";
+                    for (Season season : tvseries.getSeasons()) {
+                        try (PreparedStatement prep = conn.prepareStatement(seasonSql)){
+                            prep.setInt(1, id);
+                            prep.setInt(2, season.getSeasonNumber());
+                            prep.executeUpdate();
+                        }
+                        for (Episode episode : season.getEpisodes()) {
+                            try (PreparedStatement prep = conn.prepareStatement(episodeSql)){
+                                prep.setInt(1, id);
+                                prep.setInt(2, season.getSeasonNumber());
+                                prep.setInt(3, episode.getEpisodeNumber());
+
+                                if (episode.getEpisodeName() != null) {
+                                    prep.setString(4, episode.getEpisodeName());
+                                } else  {
+                                    prep.setNull(4, Types.VARCHAR);
+                                }
+                                prep.executeUpdate();
+                            }
+                        }
+                    }
+                }
             }
 
-//          else if item är Film:
-//            INSERT i film + film_actors
-//          else if item är Game:
-//            INSERT i game
-//              else if item är TVSeries:
-//            INSERT i tvseries + season + episode
+
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -155,6 +290,7 @@ public class DatabaseRepository implements LibraryRepository {
         executeSimpleUpdate("DELETE FROM fandom WHERE fandom = ?", fandom);
     }
 
+    // Help Methods
     private List <String> getSimpleList (String sql, String columnName) {
         List<String> list = new ArrayList<>();
         try(Connection conn = connectionManager.getConnection();
@@ -191,4 +327,30 @@ public class DatabaseRepository implements LibraryRepository {
             throw new RuntimeException(e);
         }
     }
+
+    private List <String> getListByIntKey(String sql, int id, String columnName) {
+        List <String> list = new ArrayList<>();
+
+        try(Connection conn = connectionManager.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                list.add(rs.getString(columnName));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
+//    privat metod: getListByIntKey(sql, kolumnNamn, id) -> List<String>
+//    skapa tom lista
+//    öppna connection
+//    sätt int-parametern (?)
+//    kör frågan
+//    loopa resultat: lägg till kolumnvärdet
+//    returnera listan
 }
