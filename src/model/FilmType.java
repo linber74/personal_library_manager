@@ -19,4 +19,13 @@ public enum FilmType {
     public String toString() {
         return type;
     }
+
+    public static FilmType fromString (String text){
+        for (FilmType filmType :  FilmType.values() ) {
+            if (filmType.type.equalsIgnoreCase(text)) {
+                return filmType;
+            }
+        }
+        throw new IllegalArgumentException("Format " + text + " not supported");
+    }
 }

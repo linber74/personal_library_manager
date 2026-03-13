@@ -17,4 +17,13 @@ public enum FanficType {
     public String toString() {
         return ficType;
     }
+
+    public static FanficType fromString (String text){
+        for (FanficType fanficType :  FanficType.values() ) {
+            if (fanficType.ficType.equalsIgnoreCase(text)) {
+                return fanficType;
+            }
+        }
+        throw new IllegalArgumentException("Format " + text + " not supported");
+    }
 }

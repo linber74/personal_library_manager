@@ -20,4 +20,14 @@ public enum MediaFormat {
     public String toString() {
         return format;
     }
+
+    public static MediaFormat fromString (String text){
+        for (MediaFormat mediaFormat :  MediaFormat.values() ) {
+            if (mediaFormat.format.equalsIgnoreCase(text)) {
+                return mediaFormat;
+            }
+        }
+        throw new IllegalArgumentException("Format " + text + " not supported");
+    }
 }
+

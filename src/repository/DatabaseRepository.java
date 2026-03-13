@@ -49,14 +49,14 @@ public class DatabaseRepository implements LibraryRepository {
                                         List<String> authors = getListByIntKey(
                                                 "SELECT authorName FROM Book_Authors WHERE bookId = ?", itemId, "authorName");
                                         // bookFormat
-                                        BookFormat bookFormat = BookFormat.valueOf(bookRs.getString("bookFormat"));
+                                        BookFormat bookFormat = BookFormat.fromString(bookRs.getString("bookFormat"));
                                         // fandom
                                         List<String> fandoms = getListByIntKey(
                                                 "SELECT fandom FROM book_fandoms WHERE bookId = ?", itemId, "fandom");
                                         // fanficType
                                         String fanficStr = bookRs.getString("fanficType");
                                         FanficType fanficType = (fanficStr != null)
-                                                ? FanficType.valueOf(fanficStr) : null;
+                                                ? FanficType.fromString(fanficStr) : null;
 
                                         Book book = new Book(itemId, title, genres, language, seriesInfo, authors, bookFormat, fanficType, fandoms);
                                         items.add(book);
