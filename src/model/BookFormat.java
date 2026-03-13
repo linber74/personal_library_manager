@@ -21,4 +21,13 @@ public enum BookFormat {
     public String toString() {
         return bFormat;
     }
+
+    public static BookFormat fromString (String text){
+        for (BookFormat bookFormat : BookFormat.values()) {
+            if (bookFormat.bFormat.equalsIgnoreCase(text)) {
+                return bookFormat;
+            }
+        }
+        throw new IllegalArgumentException("Format " + text + " not supported");
+    }
 }

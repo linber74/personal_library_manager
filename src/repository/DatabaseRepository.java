@@ -37,19 +37,45 @@ public class DatabaseRepository implements LibraryRepository {
                     SeriesInfo seriesInfo = (seriesName != null) ? new SeriesInfo(seriesName) :null;
 
                     switch (itemType) {
-                        case "Bok":
+                        case "Bok": {
+                            String bookSql = "Select * from Book where itemId = ?";
+
+                            try (PreparedStatement bookPrep = conn.prepareStatement(bookSql)){
+                                bookPrep.setInt(1, itemId);
+
+                                try (ResultSet bookRs = bookPrep.executeQuery()) {
+                                    if (bookRs.next()) {
+                                        // author
+                                        List<String> authors = getListByIntKey(
+                                                "SELECT authorName FROM Book_Authors WHERE bookId = ?", itemId, "authorName");
+                                        // bookFormat
+                                        BookFormat bookFormat = BookFormat.valueOf(bookRs.getString("bookFormat"));
+                                        // fandom
+                                        List<String> fandoms = getListByIntKey(
+                                                "SELECT fandom FROM book_fandoms WHERE bookId = ?", itemId, "fandom");
+                                        // fanficType
+                                        String fanficStr = bookRs.getString("fanficType");
+                                        FanficType fanficType = (fanficStr != null)
+                                                ? FanficType.valueOf(fanficStr) : null;
+
+                                        Book book = new Book(itemId, title, genres, language, seriesInfo, authors, bookFormat, fanficType, fandoms);
+                                        items.add(book);
+                                    }
+                                }
+                            }
+                        }
 
                         case "Film":
 
                         case "TV-serie":
 
                         case "Spel": {
-                            String gameSql =  "Select * from game where itemId = ?";
+                            String gameSql =  "Select creator from game where itemId = ?";
 
-                            try(PreparedStatement ps = conn.prepareStatement(gameSql)){
-                                ps.setInt(1, itemId);
+                            try(PreparedStatement gamePrep = conn.prepareStatement(gameSql)){
+                                gamePrep.setInt(1, itemId);
 
-                                try(ResultSet gameRs = ps.executeQuery()){
+                                try(ResultSet gameRs = gamePrep.executeQuery()){
                                     if (gameRs.next()) {
                                         String creator = gameRs.getString("creator");
                                         Game game = new Game(itemId, title, genres, language, seriesInfo, creator);
