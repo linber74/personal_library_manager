@@ -14,3 +14,6 @@ insert into bookFormat (bFormat)
 
 insert into fanficType (type)
 	values ('Canon'), ('AU'), ('Über'), ('Original/Okänt');
+
+insert into translationinfo (translationTypeOrLanguage)
+    values ('Svenska'), ('Engelska'), ('Spanska');
