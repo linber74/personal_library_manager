@@ -10,19 +10,20 @@ import java.util.List;
 public class DatabaseRepository implements LibraryRepository {
 
     private final ConnectionManager connectionManager;
+
     public DatabaseRepository(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
 
 
     @Override
-    public List<LibraryItem> loadAll()  {
+    public List<LibraryItem> loadAll() {
         String sql = "Select * from libraryItem";
         List<LibraryItem> items = new ArrayList<>();
         try (Connection conn = connectionManager.getConnection();
-        PreparedStatement prep = conn.prepareStatement(sql);){
+             PreparedStatement prep = conn.prepareStatement(sql);) {
 
-            try(ResultSet rs = prep.executeQuery()) {
+            try (ResultSet rs = prep.executeQuery()) {
 
                 while (rs.next()) {
                     int itemId = rs.getInt("itemId");
@@ -31,16 +32,16 @@ public class DatabaseRepository implements LibraryRepository {
                     String language = rs.getString("language");
                     String seriesName = rs.getString("seriesName");
 
-                    List <String> genres = getListByIntKey(
+                    List<String> genres = getListByIntKey(
                             "SELECT genre FROM item_genres WHERE itemId = ?", itemId, "genre");
 
-                    SeriesInfo seriesInfo = (seriesName != null) ? new SeriesInfo(seriesName) :null;
+                    SeriesInfo seriesInfo = (seriesName != null) ? new SeriesInfo(seriesName) : null;
 
                     switch (itemType) {
                         case "Bok": {
                             String bookSql = "Select * from Book where itemId = ?";
 
-                            try (PreparedStatement bookPrep = conn.prepareStatement(bookSql)){
+                            try (PreparedStatement bookPrep = conn.prepareStatement(bookSql)) {
                                 bookPrep.setInt(1, itemId);
 
                                 try (ResultSet bookRs = bookPrep.executeQuery()) {
@@ -68,7 +69,7 @@ public class DatabaseRepository implements LibraryRepository {
                         case "Film": {
                             String filmSql = "Select * from film where itemId = ?";
 
-                            try (PreparedStatement filmPrep = conn.prepareStatement(filmSql)){
+                            try (PreparedStatement filmPrep = conn.prepareStatement(filmSql)) {
                                 filmPrep.setInt(1, itemId);
                                 try (ResultSet filmRs = filmPrep.executeQuery()) {
                                     if (filmRs.next()) {
@@ -90,7 +91,7 @@ public class DatabaseRepository implements LibraryRepository {
                                         TranslationInfo translationInfo = (translation != null)
                                                 ? TranslationInfo.fromString(translation) : null;
 
-                                        Film film = new Film (itemId, title, genres, language, seriesInfo, director,
+                                        Film film = new Film(itemId, title, genres, language, seriesInfo, director,
                                                 actors, mediaFormat, filmType, translationInfo);
                                         items.add(film);
                                     }
@@ -100,7 +101,7 @@ public class DatabaseRepository implements LibraryRepository {
 
                         case "TV-serie": {
                             String tvSeriesSql = "Select * from tvSeries where itemId = ?";
-                            try (PreparedStatement tvSeriesPrep = conn.prepareStatement(tvSeriesSql)){
+                            try (PreparedStatement tvSeriesPrep = conn.prepareStatement(tvSeriesSql)) {
                                 tvSeriesPrep.setInt(1, itemId);
 
                                 try (ResultSet tvSeriesRs = tvSeriesPrep.executeQuery()) {
@@ -129,12 +130,12 @@ public class DatabaseRepository implements LibraryRepository {
                         }
 
                         case "Spel": {
-                            String gameSql =  "Select creator from game where itemId = ?";
+                            String gameSql = "Select creator from game where itemId = ?";
 
-                            try(PreparedStatement gamePrep = conn.prepareStatement(gameSql)){
+                            try (PreparedStatement gamePrep = conn.prepareStatement(gameSql)) {
                                 gamePrep.setInt(1, itemId);
 
-                                try(ResultSet gameRs = gamePrep.executeQuery()){
+                                try (ResultSet gameRs = gamePrep.executeQuery()) {
                                     if (gameRs.next()) {
                                         String creator = gameRs.getString("creator");
                                         Game game = new Game(itemId, title, genres, language, seriesInfo, creator);
@@ -169,9 +170,6 @@ public class DatabaseRepository implements LibraryRepository {
     }
 
 
-
-
-
     @Override
     public LibraryItem findById(int itemId) {
         return null;
@@ -180,8 +178,8 @@ public class DatabaseRepository implements LibraryRepository {
     @Override
     public void save(LibraryItem item) {
         String sql = ("Insert into libraryitem (title, itemType, language, seriesName) values (?, ?, ?, ?)");
-        try(Connection conn = connectionManager.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, item.getTitle());
 
@@ -192,7 +190,7 @@ public class DatabaseRepository implements LibraryRepository {
             String seriesName = (item.getSeriesInfo() != null)
                     ? item.getSeriesInfo().getSeriesName()
                     : null;
-            ps.setString(4, seriesName );
+            ps.setString(4, seriesName);
 
             ps.executeUpdate();
 
@@ -211,7 +209,7 @@ public class DatabaseRepository implements LibraryRepository {
                 case BOOK: {
                     Book book = (Book) item;
                     String bookSql = "INSERT INTO book (itemId, fanficType, bookFormat) VALUES (?, ?, ?)";
-                    try (PreparedStatement prep =  conn.prepareStatement(bookSql)){
+                    try (PreparedStatement prep = conn.prepareStatement(bookSql)) {
 
                         prep.setInt(1, id);
 
@@ -237,33 +235,17 @@ public class DatabaseRepository implements LibraryRepository {
                 }
 
                 case FILM: {
+//
                     Film film = (Film) item;
-                    String filmSql = "Insert into film (itemId, director, filmType, mediaFormat, translationInfo) values (?, ?, ?, ?, ?)";
+                    String filmSql = "Insert into film (itemId, filmType) values (?, ?)";
 
-                    try (PreparedStatement prep = conn.prepareStatement(filmSql)){
+                    insertVisualMedia(id, film);
 
+                    try (PreparedStatement prep = conn.prepareStatement(filmSql)) {
                         prep.setInt(1, id);
 
-                        if (film.getDirector() != null) {
-                            prep.setString(2, film.getDirector());
-                        }else  {
-                            prep.setNull(2, Types.VARCHAR);
-                        }
-
-                        prep.setString(3, film.getFilmType().toString());
-
-                        prep.setString(4, film.getMediaFormat().toString());
-
-                        if (film.getTranslationInfo() != null) {
-                            prep.setString(5, film.getTranslationInfo().toString());
-                        } else {
-                            prep.setNull(5, Types.VARCHAR);
-                        }
+                        prep.setString(2, film.getFilmType().toString());
                         prep.executeUpdate();
-                    }
-
-                    for (String actor : film.getActors()) {
-                        executeJunctionInsert("Insert into film_actors (filmId, actorName) values (?, ?)", id, actor);
                     }
                 }
 
@@ -271,7 +253,7 @@ public class DatabaseRepository implements LibraryRepository {
                     Game game = (Game) item;
                     String gameSql = "Insert into game (itemId, creator)  values (?, ?)";
 
-                    try (PreparedStatement prep = conn.prepareStatement(gameSql)){
+                    try (PreparedStatement prep = conn.prepareStatement(gameSql)) {
                         prep.setInt(1, id);
 
                         if (game.getCreator() != null) {
@@ -284,31 +266,35 @@ public class DatabaseRepository implements LibraryRepository {
                 }
 
                 case TV_SERIES: {
+//
                     TVSeries tvseries = (TVSeries) item;
+
+                    insertVisualMedia(id, tvseries);
+
                     String seriesSql = "Insert into tvseries (itemId) values (?)";
 
-                    try (PreparedStatement prep = conn.prepareStatement(seriesSql)){
+                    try (PreparedStatement prep = conn.prepareStatement(seriesSql)) {
                         prep.setInt(1, id);
                         prep.executeUpdate();
                     }
 
-                    String seasonSql =  "Insert into season (tvseriesId, seasonNumber) values (?, ?)";
-                    String episodeSql  = "Insert into episode (tvseriesId, seasonNumber, episodeNumber, episodeName) values (?, ?, ?, ?)";
+                    String seasonSql = "Insert into season (tvseriesId, seasonNumber) values (?, ?)";
+                    String episodeSql = "Insert into episode (tvseriesId, seasonNumber, episodeNumber, episodeName) values (?, ?, ?, ?)";
                     for (Season season : tvseries.getSeasons()) {
-                        try (PreparedStatement prep = conn.prepareStatement(seasonSql)){
+                        try (PreparedStatement prep = conn.prepareStatement(seasonSql)) {
                             prep.setInt(1, id);
                             prep.setInt(2, season.getSeasonNumber());
                             prep.executeUpdate();
                         }
                         for (Episode episode : season.getEpisodes()) {
-                            try (PreparedStatement prep = conn.prepareStatement(episodeSql)){
+                            try (PreparedStatement prep = conn.prepareStatement(episodeSql)) {
                                 prep.setInt(1, id);
                                 prep.setInt(2, season.getSeasonNumber());
                                 prep.setInt(3, episode.getEpisodeNumber());
 
                                 if (episode.getEpisodeName() != null) {
                                     prep.setString(4, episode.getEpisodeName());
-                                } else  {
+                                } else {
                                     prep.setNull(4, Types.VARCHAR);
                                 }
                                 prep.executeUpdate();
@@ -317,9 +303,6 @@ public class DatabaseRepository implements LibraryRepository {
                     }
                 }
             }
-
-
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -376,11 +359,11 @@ public class DatabaseRepository implements LibraryRepository {
     }
 
     // Help Methods
-    private List <String> getSimpleList (String sql, String columnName) {
+    private List<String> getSimpleList(String sql, String columnName) {
         List<String> list = new ArrayList<>();
-        try(Connection conn = connectionManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 list.add(rs.getString(columnName));
             }
@@ -402,9 +385,9 @@ public class DatabaseRepository implements LibraryRepository {
         }
     }
 
-    private void executeJunctionInsert (String sql, int id, String value) {
+    private void executeJunctionInsert(String sql, int id, String value) {
         try (Connection conn = connectionManager.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.setString(2, value);
             stmt.executeUpdate();
@@ -413,11 +396,11 @@ public class DatabaseRepository implements LibraryRepository {
         }
     }
 
-    private List <String> getListByIntKey(String sql, int id, String columnName) {
-        List <String> list = new ArrayList<>();
+    private List<String> getListByIntKey(String sql, int id, String columnName) {
+        List<String> list = new ArrayList<>();
 
-        try(Connection conn = connectionManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -431,11 +414,49 @@ public class DatabaseRepository implements LibraryRepository {
         return list;
     }
 
-//    privat metod: getListByIntKey(sql, kolumnNamn, id) -> List<String>
-//    skapa tom lista
-//    öppna connection
-//    sätt int-parametern (?)
-//    kör frågan
-//    loopa resultat: lägg till kolumnvärdet
-//    returnera listan
+    private void insertVisualMedia( int id, VisualMedia vm) {
+
+        String sql = "INSERT INTO visualmedia (itemId, director, mediaFormat, translationInfo) VALUES (?, ?, ?, ?)";
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+
+            if (vm.getDirector() != null) {
+                stmt.setString(2, vm.getDirector());
+            } else {
+                stmt.setNull(2, Types.VARCHAR);
+            }
+
+            stmt.setString(3, vm.getMediaFormat().toString());
+
+            if (vm.getTranslationInfo() != null) {
+                stmt.setString(4, vm.getTranslationInfo().toString());
+            } else {
+                stmt.setNull(4, Types.VARCHAR);
+            }
+            stmt.executeUpdate();
+
+            for (String actor : vm.getActors()) {
+                executeJunctionInsert("Insert into visualmedia_actors (visualmediaId, actorName) values (?, ?)", id, actor);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static class  visualMediaData {
+        String director;
+        String mediaFormat;
+        String translationInfo;
+        List<String> actors;
+    }
+
+//    klass VisualMediaData:
+//    String director
+//    MediaFormat mediaFormat
+//    TranslationInfo translationInfo
+//    List<String> actors
+
 }
+
