@@ -1,4 +1,9 @@
-package model;
+package model.media;
+
+import model.detail.SeriesInfo;
+import model.enums.BookFormat;
+import model.enums.FanficType;
+import model.enums.ItemType;
 
 import java.util.List;
 
@@ -10,7 +15,7 @@ public class Book extends LibraryItem {
     private final FanficType fanficType;
 
     public Book(int itemId, String title, List<String> genre, String language,
-                SeriesInfo seriesInfo, List<String> author, BookFormat bookFormat,FanficType fanficType, List<String> fandom) {
+                SeriesInfo seriesInfo, List<String> author, BookFormat bookFormat, FanficType fanficType, List<String> fandom) {
         super(itemId, ItemType.BOOK, title, genre, language, seriesInfo);
         this.author = author;
         this.bookFormat = bookFormat;

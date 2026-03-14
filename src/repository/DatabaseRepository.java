@@ -1,10 +1,13 @@
 package repository;
 
-import model.*;
+import model.detail.Season;
+import model.detail.SeriesInfo;
+import model.enums.*;
+import model.media.*;
+import model.detail.Episode;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 

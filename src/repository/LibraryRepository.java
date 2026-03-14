@@ -1,6 +1,6 @@
 package repository;
 
-import model.LibraryItem;
+import model.media.LibraryItem;
 
 import java.util.List;
 

@@ -1,6 +1,12 @@
 package service;
 
-import model.*;
+import model.detail.Season;
+import model.detail.SeriesInfo;
+import model.enums.*;
+import model.media.Book;
+import model.media.Film;
+import model.media.Game;
+import model.media.TVSeries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +58,7 @@ public class LibraryItemFactory {
     }
 
     public Film createFilm (String title, List<String> genre, String language, SeriesInfo seriesInfo, String director,
-                           List<String> actors, MediaFormat mediaFormat, FilmType filmType, TranslationInfo translationInfo) {
+                            List<String> actors, MediaFormat mediaFormat, FilmType filmType, TranslationInfo translationInfo) {
 
         movieTv(title, director, mediaFormat);
 
@@ -69,7 +75,7 @@ public class LibraryItemFactory {
         }
 
 
-        return new Film(id, title, genre, language, seriesInfo, director, safeActors, mediaFormat, filmType, translationInfo);
+        return new Film(id, title, genre, language, seriesInfo, director, safeActors, mediaFormat,  translationInfo, filmType);
     }
 
     private void movieTv(String title, String director, MediaFormat mediaFormat) {

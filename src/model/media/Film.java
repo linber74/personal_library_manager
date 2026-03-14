@@ -1,6 +1,11 @@
-package model;
+package model.media;
 
-import java.util.ArrayList;
+import model.detail.SeriesInfo;
+import model.enums.FilmType;
+import model.enums.ItemType;
+import model.enums.MediaFormat;
+import model.enums.TranslationInfo;
+
 import java.util.List;
 
 public class Film extends VisualMedia {

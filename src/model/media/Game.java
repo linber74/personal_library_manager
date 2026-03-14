@@ -1,4 +1,7 @@
-package model;
+package model.media;
+
+import model.enums.ItemType;
+import model.detail.SeriesInfo;
 
 import java.util.List;
 

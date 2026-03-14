@@ -1,4 +1,4 @@
-package model;
+package model.detail;
 
 public class Episode {
 

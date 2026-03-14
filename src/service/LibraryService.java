@@ -1,7 +1,9 @@
 package service;
 
-import model.*;
-import repository.DatabaseRepository;
+import model.detail.Season;
+import model.detail.SeriesInfo;
+import model.enums.*;
+import model.media.*;
 import repository.LibraryRepository;
 
 import java.util.ArrayList;

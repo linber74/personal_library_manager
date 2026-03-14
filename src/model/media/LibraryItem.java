@@ -1,5 +1,8 @@
-package model;
+package model.media;
 
+
+import model.detail.SeriesInfo;
+import model.enums.ItemType;
 
 import java.util.List;
 
@@ -10,7 +13,7 @@ public abstract class LibraryItem {
     private String title;
     private List<String> genre;
     private  String language;
-    private  SeriesInfo seriesInfo;
+    private SeriesInfo seriesInfo;
 
     public LibraryItem(int itemId, ItemType itemType, String title, List<String> genre, String language, SeriesInfo seriesInfo) {
         this.itemId = itemId;

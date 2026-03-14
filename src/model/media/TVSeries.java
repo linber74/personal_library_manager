@@ -1,9 +1,15 @@
-package model;
+package model.media;
+
+import model.detail.Season;
+import model.detail.SeriesInfo;
+import model.enums.ItemType;
+import model.enums.MediaFormat;
+import model.enums.TranslationInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TVSeries extends VisualMedia{
+public class TVSeries extends VisualMedia {
 
     private final List<Season> seasons;
 

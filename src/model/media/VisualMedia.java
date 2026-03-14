@@ -1,9 +1,14 @@
-package model;
+package model.media;
+
+import model.detail.SeriesInfo;
+import model.enums.ItemType;
+import model.enums.MediaFormat;
+import model.enums.TranslationInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class VisualMedia extends LibraryItem{
+public abstract class VisualMedia extends LibraryItem {
 
     private final String director;
     private final List<String> actors;
@@ -11,7 +16,7 @@ public abstract class VisualMedia extends LibraryItem{
     private final TranslationInfo translationInfo;
 
     public VisualMedia (int itemId, ItemType itemType, String title, List<String> genre, String language,
-                       SeriesInfo seriesInfo, String director, List<String> actors, MediaFormat mediaFormat, TranslationInfo translationInfo) {
+                        SeriesInfo seriesInfo, String director, List<String> actors, MediaFormat mediaFormat, TranslationInfo translationInfo) {
         super(itemId, itemType, title, genre, language, seriesInfo);
         this.director = director;
         if (actors != null) {
