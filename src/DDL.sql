@@ -126,7 +126,7 @@ SELECT * FROM bookFormat;
 SELECT * FROM seriesInfo;
 SELECT * FROM translationInfo;
 SELECT * FROM libraryitem;
-SELECT * FROM visualmedia
+SELECT * FROM visualmedia;
 SELECT * FROM film;
 SELECT * FROM book;
 SELECT * FROM game;
