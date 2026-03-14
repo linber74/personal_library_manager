@@ -4,6 +4,7 @@ import model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -73,26 +74,13 @@ public class DatabaseRepository implements LibraryRepository {
                                 filmPrep.setInt(1, itemId);
                                 try (ResultSet filmRs = filmPrep.executeQuery()) {
                                     if (filmRs.next()) {
-                                        // director
-                                        String director = filmRs.getString("director");
-
-                                        // actors
-                                        List<String> actors = getListByIntKey(
-                                                "SELECT actorName FROM film_actors WHERE filmId = ?", itemId, "actorName");
-
-                                        // mediaFormat
-                                        MediaFormat mediaFormat = MediaFormat.fromString(filmRs.getString("mediaFormat"));
+                                        VisualMediaData vm =  loadVisualMediaData(itemId);
 
                                         // filmType
                                         FilmType filmType = FilmType.fromString(filmRs.getString("filmType"));
 
-                                        // translationInfo
-                                        String translation = filmRs.getString("translationinfo");
-                                        TranslationInfo translationInfo = (translation != null)
-                                                ? TranslationInfo.fromString(translation) : null;
-
-                                        Film film = new Film(itemId, title, genres, language, seriesInfo, director,
-                                                actors, mediaFormat, filmType, translationInfo);
+                                        Film film = new Film(itemId, title, genres, language, seriesInfo, vm.director,
+                                                vm.actors, vm.mediaFormat, vm.translationInfo, filmType);
                                         items.add(film);
                                     }
                                 }
@@ -106,27 +94,50 @@ public class DatabaseRepository implements LibraryRepository {
 
                                 try (ResultSet tvSeriesRs = tvSeriesPrep.executeQuery()) {
                                     if (tvSeriesRs.next()) {
-                                        // actors
-                                        List<String> actors = getListByIntKey(
-                                                "SELECT actorName FROM film_actors WHERE filmId = ?", itemId, "actorName");
+                                        VisualMediaData vm = loadVisualMediaData(itemId);
 
                                         // season
                                         String seasonSql = "SELECT * FROM season WHERE tvseriesId = ?";
 
+                                        try (PreparedStatement seasonPrep = conn.prepareStatement(seasonSql)) {
+                                            seasonPrep.setInt(1, itemId);
 
-                                        // episodes
+                                            List <Season> seasons = new ArrayList<>();
+
+                                            try (ResultSet seasonRs = seasonPrep.executeQuery()) {
+                                                while (seasonRs.next()) {
+                                                    int seasonNumber = seasonRs.getInt("seasonNumber");
+
+                                                    String episodeSql = "SELECT * FROM episode WHERE tvseriesId = ? AND seasonNumber = ?";
+
+                                                    List <Episode> episodes = new ArrayList<>();
+
+                                                    try(PreparedStatement episodePrep = conn.prepareStatement(episodeSql)) {
+                                                        episodePrep.setInt(1, itemId);
+                                                        episodePrep.setInt(2, seasonNumber);
+
+                                                        try (ResultSet episodeRs = episodePrep.executeQuery()) {
+                                                            while (episodeRs.next()) {
+                                                                int episodeNumber = episodeRs.getInt("episodeNumber");
+                                                                String episodeName = episodeRs.getString("episodeName");
+
+                                                                Episode episode = new Episode(episodeNumber, episodeName);
+
+                                                                episodes.add(episode);
+                                                            }
+                                                        }
+                                                    }
+                                                    Season season = new Season(seasonNumber, episodes);
+                                                    seasons.add(season);
+                                                }
+                                                TVSeries tvSeries = new TVSeries(itemId, title, genres, language, seriesInfo,
+                                                        vm.director, vm.actors, vm.mediaFormat, vm.translationInfo, seasons);
+                                                items.add(tvSeries);
+                                            }
+                                        }
                                     }
                                 }
                             }
-//                                hämta seasons: SELECT * FROM season WHERE tvseriesId = ?
-//while (seasonRs.next()):
-//    int seasonNumber = seasonRs.getInt("seasonNumber")
-//
-//    hämta episodes: SELECT * FROM episode WHERE tvseriesId = ? AND seasonNumber = ?
-//    while (episodeRs.next()):
-//        skapa Episode-objekt
-//
-//    skapa Season-objekt med episodlistan
                         }
 
                         case "Spel": {
@@ -148,19 +159,6 @@ public class DatabaseRepository implements LibraryRepository {
                     }
 
 
-//SeriesInfo seriesInfo = (seriesName != null)
-//    ? new SeriesInfo(seriesName) : null;
-//
-// Switch på itemType-strängen
-//switch (itemType):
-//    case "Bok": hämta book-data, skapa Book
-//    case "Film": hämta film-data, skapa Film
-//    case "Spel": hämta game-data, skapa Game
-//    case "TV-serie": hämta tvseries-data, skapa TVSeries
-//
-
-                    /// / Lägg till i listan
-//items.add(item);
                 }
             }
         } catch (SQLException e) {
@@ -445,18 +443,49 @@ public class DatabaseRepository implements LibraryRepository {
         }
     }
 
-    private static class  visualMediaData {
+    private VisualMediaData loadVisualMediaData(int id) {
+        String sql = "SELECT * FROM visualmedia WHERE itemId = ?";
+
+        try (Connection conn = connectionManager.getConnection();
+        PreparedStatement prep = conn.prepareStatement(sql)) {
+            prep.setInt(1, id);
+            try(ResultSet rs = prep.executeQuery()) {
+                if (rs.next()) {
+                    VisualMediaData vm = new VisualMediaData();
+
+                    // director
+                    vm.director = rs.getString("director");
+
+                    // mediaFormat
+                    String mediaStr = rs.getString("mediaFormat");
+                    vm.mediaFormat = MediaFormat.fromString(mediaStr);
+
+                    // translationInfo
+                    String translationInfo = rs.getString("translationInfo");
+                    vm.translationInfo = (translationInfo != null) ?
+                            TranslationInfo.fromString(translationInfo) : null;
+
+                    // actors
+                    vm.actors = getListByIntKey("SELECT actorName FROM visualmedia_actors WHERE visualmediaId = ?", id,
+                    "actorName");
+                    return vm;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    private static class VisualMediaData {
         String director;
-        String mediaFormat;
-        String translationInfo;
+        MediaFormat mediaFormat;
+        TranslationInfo translationInfo;
         List<String> actors;
     }
 
-//    klass VisualMediaData:
-//    String director
-//    MediaFormat mediaFormat
-//    TranslationInfo translationInfo
-//    List<String> actors
+
 
 }
 
