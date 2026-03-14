@@ -43,17 +43,22 @@ foreign key (itemType) references itemType (type),
 foreign key (seriesName) references seriesInfo (seriesName),
 foreign key (language) references language (language));
 
+create table visualmedia
+(itemId int not null primary key,
+director Varchar (50) null,
+mediaFormat Varchar (50) not null,
+translationInfo Varchar (50) null,
+foreign key (itemId) references libraryitem (itemId),
+foreign key (mediaFormat) references mediaFormat (format),
+foreign key (translationInfo) references translationInfo (translationTypeOrLanguage));
+
+
 
 create table film
 (itemId int not null primary key,
-director VARCHAR (50) null,
 filmType VARCHAR (50) not null,
-mediaFormat VARCHAR (50) not null,
-translationInfo VARCHAR (50) null,
-foreign key (itemId) references libraryitem (itemId),
-foreign key (filmType) references filmType (type),
-foreign key (mediaFormat) references mediaFormat (format),
-foreign key  (translationInfo) references translationInfo (translationTypeOrLanguage));
+foreign key (itemId) references visualmedia (itemId),
+foreign key (filmType) references filmType (type));
 
 
 create table book 
@@ -71,13 +76,13 @@ foreign key (itemId) references libraryitem (itemId));
 
 create table tvseries
 (itemId int not null primary key,
-foreign key (itemId) references libraryitem (itemId));
+foreign key (itemId) references visualmedia (itemId));
 
-create table film_actors
-(filmId int not null ,
+create table visualmedia_actors
+(visualmediaId int not null ,
 actorName Varchar (50) not null,
-primary key (filmId, actorName),
-foreign key (filmId) references film (ItemId));
+primary key (visualmediaId, actorName),
+foreign key (visualmediaId) references visualmedia(itemId));
 
 CREATE TABLE Book_Authors
 (bookId INT NOT NULL,
@@ -121,11 +126,12 @@ SELECT * FROM bookFormat;
 SELECT * FROM seriesInfo;
 SELECT * FROM translationInfo;
 SELECT * FROM libraryitem;
+SELECT * FROM visualmedia
 SELECT * FROM film;
 SELECT * FROM book;
 SELECT * FROM game;
 SELECT * FROM tvseries;
-SELECT * FROM film_actors;
+SELECT * FROM visualmedia_actors;
 SELECT * FROM Book_Authors;
 SELECT * FROM season;
 SELECT * FROM episode;

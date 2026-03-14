@@ -65,9 +65,68 @@ public class DatabaseRepository implements LibraryRepository {
                             }
                         }
 
-                        case "Film":
+                        case "Film": {
+                            String filmSql = "Select * from film where itemId = ?";
 
-                        case "TV-serie":
+                            try (PreparedStatement filmPrep = conn.prepareStatement(filmSql)){
+                                filmPrep.setInt(1, itemId);
+                                try (ResultSet filmRs = filmPrep.executeQuery()) {
+                                    if (filmRs.next()) {
+                                        // director
+                                        String director = filmRs.getString("director");
+
+                                        // actors
+                                        List<String> actors = getListByIntKey(
+                                                "SELECT actorName FROM film_actors WHERE filmId = ?", itemId, "actorName");
+
+                                        // mediaFormat
+                                        MediaFormat mediaFormat = MediaFormat.fromString(filmRs.getString("mediaFormat"));
+
+                                        // filmType
+                                        FilmType filmType = FilmType.fromString(filmRs.getString("filmType"));
+
+                                        // translationInfo
+                                        String translation = filmRs.getString("translationinfo");
+                                        TranslationInfo translationInfo = (translation != null)
+                                                ? TranslationInfo.fromString(translation) : null;
+
+                                        Film film = new Film (itemId, title, genres, language, seriesInfo, director,
+                                                actors, mediaFormat, filmType, translationInfo);
+                                        items.add(film);
+                                    }
+                                }
+                            }
+                        }
+
+                        case "TV-serie": {
+                            String tvSeriesSql = "Select * from tvSeries where itemId = ?";
+                            try (PreparedStatement tvSeriesPrep = conn.prepareStatement(tvSeriesSql)){
+                                tvSeriesPrep.setInt(1, itemId);
+
+                                try (ResultSet tvSeriesRs = tvSeriesPrep.executeQuery()) {
+                                    if (tvSeriesRs.next()) {
+                                        // actors
+                                        List<String> actors = getListByIntKey(
+                                                "SELECT actorName FROM film_actors WHERE filmId = ?", itemId, "actorName");
+
+                                        // season
+                                        String seasonSql = "SELECT * FROM season WHERE tvseriesId = ?";
+
+
+                                        // episodes
+                                    }
+                                }
+                            }
+//                                hämta seasons: SELECT * FROM season WHERE tvseriesId = ?
+//while (seasonRs.next()):
+//    int seasonNumber = seasonRs.getInt("seasonNumber")
+//
+//    hämta episodes: SELECT * FROM episode WHERE tvseriesId = ? AND seasonNumber = ?
+//    while (episodeRs.next()):
+//        skapa Episode-objekt
+//
+//    skapa Season-objekt med episodlistan
+                        }
 
                         case "Spel": {
                             String gameSql =  "Select creator from game where itemId = ?";
