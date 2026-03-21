@@ -30,138 +30,17 @@ public class DatabaseRepository implements LibraryRepository {
             try (ResultSet rs = prep.executeQuery()) {
 
                 while (rs.next()) {
-                    int itemId = rs.getInt("itemId");
-                    String title = rs.getString("title");
-                    String itemType = rs.getString("itemType");
-                    String language = rs.getString("language");
-                    String seriesName = rs.getString("seriesName");
+                    LibraryItemData data = extractLibraryItemData(rs);
 
-                    List<String> genres = getListByIntKey(
-                            "SELECT genre FROM item_genres WHERE itemId = ?", itemId, "genre");
+                    switch (data.itemType) {
+                        case "Bok" -> items.add(loadBookData(conn, data));
 
-                    SeriesInfo seriesInfo = (seriesName != null) ? new SeriesInfo(seriesName) : null;
+                        case "Film" -> items.add(loadFilmData(conn, data));
 
-                    switch (itemType) {
-                        case "Bok": {
-                            String bookSql = "Select * from Book where itemId = ?";
+                        case "TV-serie" -> items.add(loadTVSeriesData(conn, data));
 
-                            try (PreparedStatement bookPrep = conn.prepareStatement(bookSql)) {
-                                bookPrep.setInt(1, itemId);
-
-                                try (ResultSet bookRs = bookPrep.executeQuery()) {
-                                    if (bookRs.next()) {
-                                        // author
-                                        List<String> authors = getListByIntKey(
-                                                "SELECT authorName FROM Book_Authors WHERE bookId = ?", itemId, "authorName");
-                                        // bookFormat
-                                        BookFormat bookFormat = BookFormat.fromString(bookRs.getString("bookFormat"));
-                                        // fandom
-                                        List<String> fandoms = getListByIntKey(
-                                                "SELECT fandom FROM book_fandoms WHERE bookId = ?", itemId, "fandom");
-                                        // fanficType
-                                        String fanficStr = bookRs.getString("fanficType");
-                                        FanficType fanficType = (fanficStr != null)
-                                                ? FanficType.fromString(fanficStr) : null;
-
-                                        Book book = new Book(itemId, title, genres, language, seriesInfo, authors, bookFormat, fanficType, fandoms);
-                                        items.add(book);
-                                    }
-                                }
-                            }
-                        }
-
-                        case "Film": {
-                            String filmSql = "Select * from film where itemId = ?";
-
-                            try (PreparedStatement filmPrep = conn.prepareStatement(filmSql)) {
-                                filmPrep.setInt(1, itemId);
-                                try (ResultSet filmRs = filmPrep.executeQuery()) {
-                                    if (filmRs.next()) {
-                                        VisualMediaData vm =  loadVisualMediaData(itemId);
-
-                                        // filmType
-                                        FilmType filmType = FilmType.fromString(filmRs.getString("filmType"));
-
-                                        Film film = new Film(itemId, title, genres, language, seriesInfo, vm.director,
-                                                vm.actors, vm.mediaFormat, vm.translationInfo, filmType);
-                                        items.add(film);
-                                    }
-                                }
-                            }
-                        }
-
-                        case "TV-serie": {
-                            String tvSeriesSql = "Select * from tvSeries where itemId = ?";
-                            try (PreparedStatement tvSeriesPrep = conn.prepareStatement(tvSeriesSql)) {
-                                tvSeriesPrep.setInt(1, itemId);
-
-                                try (ResultSet tvSeriesRs = tvSeriesPrep.executeQuery()) {
-                                    if (tvSeriesRs.next()) {
-                                        VisualMediaData vm = loadVisualMediaData(itemId);
-
-                                        // season
-                                        String seasonSql = "SELECT * FROM season WHERE tvseriesId = ?";
-
-                                        try (PreparedStatement seasonPrep = conn.prepareStatement(seasonSql)) {
-                                            seasonPrep.setInt(1, itemId);
-
-                                            List <Season> seasons = new ArrayList<>();
-
-                                            try (ResultSet seasonRs = seasonPrep.executeQuery()) {
-                                                while (seasonRs.next()) {
-                                                    int seasonNumber = seasonRs.getInt("seasonNumber");
-
-                                                    String episodeSql = "SELECT * FROM episode WHERE tvseriesId = ? AND seasonNumber = ?";
-
-                                                    List <Episode> episodes = new ArrayList<>();
-
-                                                    try(PreparedStatement episodePrep = conn.prepareStatement(episodeSql)) {
-                                                        episodePrep.setInt(1, itemId);
-                                                        episodePrep.setInt(2, seasonNumber);
-
-                                                        try (ResultSet episodeRs = episodePrep.executeQuery()) {
-                                                            while (episodeRs.next()) {
-                                                                int episodeNumber = episodeRs.getInt("episodeNumber");
-                                                                String episodeName = episodeRs.getString("episodeName");
-
-                                                                Episode episode = new Episode(episodeNumber, episodeName);
-
-                                                                episodes.add(episode);
-                                                            }
-                                                        }
-                                                    }
-                                                    Season season = new Season(seasonNumber, episodes);
-                                                    seasons.add(season);
-                                                }
-                                                TVSeries tvSeries = new TVSeries(itemId, title, genres, language, seriesInfo,
-                                                        vm.director, vm.actors, vm.mediaFormat, vm.translationInfo, seasons);
-                                                items.add(tvSeries);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        case "Spel": {
-                            String gameSql = "Select creator from game where itemId = ?";
-
-                            try (PreparedStatement gamePrep = conn.prepareStatement(gameSql)) {
-                                gamePrep.setInt(1, itemId);
-
-                                try (ResultSet gameRs = gamePrep.executeQuery()) {
-                                    if (gameRs.next()) {
-                                        String creator = gameRs.getString("creator");
-                                        Game game = new Game(itemId, title, genres, language, seriesInfo, creator);
-                                        items.add(game);
-                                    }
-                                }
-                            }
-                            break;
-                        }
+                        case "Spel"  -> items.add(loadGameData(conn, data));
                     }
-
-
                 }
             }
         } catch (SQLException e) {
@@ -173,8 +52,34 @@ public class DatabaseRepository implements LibraryRepository {
 
     @Override
     public LibraryItem findById(int itemId) {
+        String sql = "SELECT * FROM libraryItem WHERE itemId = ?";
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement prep = conn.prepareStatement(sql)) {
+            prep.setInt(1, itemId);
+
+            try (ResultSet rs = prep.executeQuery()) {
+
+                if (rs.next()) {
+                    LibraryItemData data = extractLibraryItemData(rs);
+
+                    switch (data.itemType) {
+                        case "Bok": return loadBookData(conn, data);
+
+                        case "Film": return loadFilmData(conn, data);
+
+                        case "TV-serie": return loadTVSeriesData(conn, data);
+
+                        case "Spel": return loadGameData(conn, data);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
+
 
     @Override
     public void save(LibraryItem item) {
@@ -415,7 +320,7 @@ public class DatabaseRepository implements LibraryRepository {
         return list;
     }
 
-    private void insertVisualMedia( int id, VisualMedia vm) {
+    private void insertVisualMedia(int id, VisualMedia vm) {
 
         String sql = "INSERT INTO visualmedia (itemId, director, mediaFormat, translationInfo) VALUES (?, ?, ?, ?)";
         try (Connection conn = connectionManager.getConnection();
@@ -450,9 +355,9 @@ public class DatabaseRepository implements LibraryRepository {
         String sql = "SELECT * FROM visualmedia WHERE itemId = ?";
 
         try (Connection conn = connectionManager.getConnection();
-        PreparedStatement prep = conn.prepareStatement(sql)) {
+             PreparedStatement prep = conn.prepareStatement(sql)) {
             prep.setInt(1, id);
-            try(ResultSet rs = prep.executeQuery()) {
+            try (ResultSet rs = prep.executeQuery()) {
                 if (rs.next()) {
                     VisualMediaData vm = new VisualMediaData();
 
@@ -470,7 +375,7 @@ public class DatabaseRepository implements LibraryRepository {
 
                     // actors
                     vm.actors = getListByIntKey("SELECT actorName FROM visualmedia_actors WHERE visualmediaId = ?", id,
-                    "actorName");
+                            "actorName");
                     return vm;
                 }
             }
@@ -481,14 +386,168 @@ public class DatabaseRepository implements LibraryRepository {
         return null;
     }
 
-    private static class VisualMediaData {
-        String director;
-        MediaFormat mediaFormat;
-        TranslationInfo translationInfo;
-        List<String> actors;
+    private LibraryItemData extractLibraryItemData(ResultSet rs) throws SQLException {
+
+        LibraryItemData lid = new LibraryItemData();
+
+        lid.itemId = rs.getInt("itemId");
+        lid.title = rs.getString("title");
+        lid.itemType = rs.getString("itemType");
+        lid.language = rs.getString("language");
+
+        String sName = rs.getString("seriesName");
+        lid.seriesInfo = (sName != null) ? new SeriesInfo(sName) : null;
+
+        lid.genres = getListByIntKey("Select genre From item_genres Where itemId = ? ", lid.itemId, "genre");
+
+        return lid;
     }
 
+    private Book loadBookData(Connection conn, LibraryItemData data) {
+        String bookSql = "Select * from Book where itemId = ?";
 
+        try (PreparedStatement bookPrep = conn.prepareStatement(bookSql)) {
+            bookPrep.setInt(1, data.itemId);
 
-}
+            try (ResultSet bookRs = bookPrep.executeQuery()) {
+                if (bookRs.next()) {
+                    // author
+                    List<String> authors = getListByIntKey(
+                            "SELECT authorName FROM Book_Authors WHERE bookId = ?", data.itemId, "authorName");
+                    // bookFormat
+                    BookFormat bookFormat = BookFormat.fromString(bookRs.getString("bookFormat"));
+                    // fandom
+                    List<String> fandoms = getListByIntKey(
+                            "SELECT fandom FROM book_fandoms WHERE bookId = ?", data.itemId, "fandom");
+                    // fanficType
+                    String fanficStr = bookRs.getString("fanficType");
+                    FanficType fanficType = (fanficStr != null)
+                            ? FanficType.fromString(fanficStr) : null;
 
+                    Book book = new Book(data.itemId, data.title, data.genres, data.language, data.seriesInfo, authors, bookFormat, fanficType, fandoms);
+
+                    return book;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    private Film loadFilmData(Connection conn, LibraryItemData data){
+        String filmSql = "Select * from film where itemId = ?";
+
+        try (PreparedStatement filmPrep = conn.prepareStatement(filmSql)) {
+            filmPrep.setInt(1, data.itemId);
+            try (ResultSet filmRs = filmPrep.executeQuery()) {
+                if (filmRs.next()) {
+                    VisualMediaData vm = loadVisualMediaData(data.itemId);
+
+                    // filmType
+                    FilmType filmType = FilmType.fromString(filmRs.getString("filmType"));
+
+                    Film film = new Film(data.itemId, data.title, data.genres, data.language, data.seriesInfo, vm.director,
+                            vm.actors, vm.mediaFormat, vm.translationInfo, filmType);
+
+                    return film;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    private Game loadGameData(Connection conn, LibraryItemData data) {
+        String gameSql = "Select creator from game where itemId = ?";
+
+        try (PreparedStatement gamePrep = conn.prepareStatement(gameSql)) {
+            gamePrep.setInt(1, data.itemId);
+
+            try (ResultSet gameRs = gamePrep.executeQuery()) {
+                if (gameRs.next()) {
+                    String creator = gameRs.getString("creator");
+                    Game game = new Game(data.itemId, data.title, data.genres, data.language, data.seriesInfo, creator);
+
+                    return game;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+    private TVSeries loadTVSeriesData(Connection conn, LibraryItemData data) {
+        String tvSeriesSql = "Select * from tvSeries where itemId = ?";
+        try (PreparedStatement tvSeriesPrep = conn.prepareStatement(tvSeriesSql)) {
+            tvSeriesPrep.setInt(1, data.itemId);
+
+            try (ResultSet tvSeriesRs = tvSeriesPrep.executeQuery()) {
+                if (tvSeriesRs.next()) {
+                    VisualMediaData vm = loadVisualMediaData(data.itemId);
+
+                    // season
+                    String seasonSql = "SELECT * FROM season WHERE tvseriesId = ?";
+
+                    try (PreparedStatement seasonPrep = conn.prepareStatement(seasonSql)) {
+                        seasonPrep.setInt(1, data.itemId);
+
+                        List<Season> seasons = new ArrayList<>();
+
+                        try (ResultSet seasonRs = seasonPrep.executeQuery()) {
+                            while (seasonRs.next()) {
+                                int seasonNumber = seasonRs.getInt("seasonNumber");
+
+                                String episodeSql = "SELECT * FROM episode WHERE tvseriesId = ? AND seasonNumber = ?";
+
+                                List<Episode> episodes = new ArrayList<>();
+
+                                try (PreparedStatement episodePrep = conn.prepareStatement(episodeSql)) {
+                                    episodePrep.setInt(1, data.itemId);
+                                    episodePrep.setInt(2, seasonNumber);
+
+                                    try (ResultSet episodeRs = episodePrep.executeQuery()) {
+                                        while (episodeRs.next()) {
+                                            int episodeNumber = episodeRs.getInt("episodeNumber");
+                                            String episodeName = episodeRs.getString("episodeName");
+
+                                            Episode episode = new Episode(episodeNumber, episodeName);
+
+                                            episodes.add(episode);
+                                        }
+                                    }
+                                }
+                                Season season = new Season(seasonNumber, episodes);
+                                seasons.add(season);
+                            }
+                            TVSeries tvSeries = new TVSeries(data.itemId, data.title, data.genres, data.language, data.seriesInfo,
+                                    vm.director, vm.actors, vm.mediaFormat, vm.translationInfo, seasons);
+                            return tvSeries;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+        // Inner classes
+        private static class VisualMediaData {
+            String director;
+            MediaFormat mediaFormat;
+            TranslationInfo translationInfo;
+            List<String> actors;
+        }
+
+        private static class LibraryItemData {
+            int itemId;
+            String title;
+            String itemType;
+            String language;
+            SeriesInfo seriesInfo;
+            List<String> genres;
+        }
+    }
