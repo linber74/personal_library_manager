@@ -216,7 +216,52 @@ public class DatabaseRepository implements LibraryRepository {
 
     @Override
     public boolean deleteById(int itemId) {
-        return false;
+        String sql = "SELECT itemType FROM libraryItem WHERE itemId = ?";
+
+        try (Connection conn = connectionManager.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, itemId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String itemType = rs.getString("itemType");
+                executeDeleteByInt("Delete from item_genres WHERE itemId = ?", itemId);
+
+                switch (itemType) {
+                    case "Bok": {
+                        executeDeleteByInt("Delete from book_authors WHERE bookId = ?", itemId);
+                        executeDeleteByInt("Delete from book_fandoms WHERE bookId = ?", itemId);
+                        executeDeleteByInt("Delete from book where itemId = ?", itemId);
+                        break;
+                    }
+                    case "Film": {
+                        executeDeleteByInt("Delete from visualmedia_actors WHERE visualmediaId = ?", itemId);
+                        executeDeleteByInt("Delete from film where itemId = ?", itemId);
+                        executeDeleteByInt("Delete from visualmedia where itemId = ?", itemId);
+                        break;
+                    }
+
+                    case "TV-serie": {
+                        executeDeleteByInt("Delete from visualmedia_actors WHERE visualmediaId = ?", itemId);
+                        executeDeleteByInt("Delete from episode WHERE tvseriesId = ?", itemId);
+                        executeDeleteByInt("Delete from season WHERE tvseriesId = ?", itemId);
+                        executeDeleteByInt("Delete from tvseries where itemId = ?", itemId);
+                        executeDeleteByInt("Delete from visualmedia where itemId = ?", itemId);
+                        break;
+                    }
+                    case "Spel": {
+                        executeDeleteByInt("Delete from game WHERE itemId = ?", itemId);
+                        break;
+                    }
+                }
+                executeDeleteByInt("Delete from libraryitem where itemId = ?", itemId);
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false ;
     }
 
     @Override
@@ -286,6 +331,16 @@ public class DatabaseRepository implements LibraryRepository {
             stmt.setString(1, value);
             stmt.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void executeDeleteByInt (String sql, int id) {
+        try (Connection conn = connectionManager.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
