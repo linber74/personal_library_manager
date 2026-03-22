@@ -13,10 +13,10 @@ public class Film extends VisualMedia {
     private final FilmType filmType;
 
 
-    public Film(int itemId, String title, List<String> genre, String language, SeriesInfo seriesInfo,
+    public Film(int itemId, String title, List<String> genre, String language, SeriesInfo seriesInfo, Integer publishYear,
                 String director, List<String> actors, MediaFormat mediaFormat, TranslationInfo translationInfo, FilmType filmType) {
 
-        super(itemId, ItemType.FILM, title, genre, language, seriesInfo, director, actors, mediaFormat, translationInfo);
+        super(itemId, ItemType.FILM, title, genre, language, publishYear, seriesInfo, director, actors, mediaFormat, translationInfo);
         this.filmType = filmType;
     }
 

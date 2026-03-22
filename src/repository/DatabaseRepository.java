@@ -83,7 +83,7 @@ public class DatabaseRepository implements LibraryRepository {
 
     @Override
     public void save(LibraryItem item) {
-        String sql = ("Insert into libraryitem (title, itemType, language, seriesName) values (?, ?, ?, ?)");
+        String sql = ("Insert into libraryitem (title, itemType, language, publishYear, seriesName) values (?, ?, ?, ?, ?)");
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -93,10 +93,16 @@ public class DatabaseRepository implements LibraryRepository {
 
             ps.setString(3, item.getLanguage());
 
+            if (item.getPublishYear() != null) {
+                ps.setInt(4, item.getPublishYear());
+            } else  {
+                ps.setNull(4, Types.INTEGER);
+            }
+
             String seriesName = (item.getSeriesInfo() != null)
                     ? item.getSeriesInfo().getSeriesName()
                     : null;
-            ps.setString(4, seriesName);
+            ps.setString(5, seriesName);
 
             ps.executeUpdate();
 
@@ -138,6 +144,7 @@ public class DatabaseRepository implements LibraryRepository {
                             executeJunctionInsert("Insert into book_fandoms (bookId, fandom) values (?, ?)", id, fandom);
                         }
                     }
+                    break;
                 }
 
                 case FILM: {
@@ -153,6 +160,7 @@ public class DatabaseRepository implements LibraryRepository {
                         prep.setString(2, film.getFilmType().toString());
                         prep.executeUpdate();
                     }
+                    break;
                 }
 
                 case GAME: {
@@ -169,6 +177,7 @@ public class DatabaseRepository implements LibraryRepository {
                         }
                         prep.executeUpdate();
                     }
+                    break;
                 }
 
                 case TV_SERIES: {
@@ -207,8 +216,11 @@ public class DatabaseRepository implements LibraryRepository {
                             }
                         }
                     }
+                    break;
                 }
             }
+        }catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("Finns redan i databasen!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -449,6 +461,7 @@ public class DatabaseRepository implements LibraryRepository {
         lid.title = rs.getString("title");
         lid.itemType = rs.getString("itemType");
         lid.language = rs.getString("language");
+        lid.publishYear = rs.getInt("publishYear");
 
         String sName = rs.getString("seriesName");
         lid.seriesInfo = (sName != null) ? new SeriesInfo(sName) : null;
@@ -479,7 +492,7 @@ public class DatabaseRepository implements LibraryRepository {
                     FanficType fanficType = (fanficStr != null)
                             ? FanficType.fromString(fanficStr) : null;
 
-                    Book book = new Book(data.itemId, data.title, data.genres, data.language, data.seriesInfo, authors, bookFormat, fanficType, fandoms);
+                    Book book = new Book(data.itemId, data.title, data.genres, data.language, data.publishYear, data.seriesInfo, authors, bookFormat, fanficType, fandoms);
 
                     return book;
                 }
@@ -502,7 +515,7 @@ public class DatabaseRepository implements LibraryRepository {
                     // filmType
                     FilmType filmType = FilmType.fromString(filmRs.getString("filmType"));
 
-                    Film film = new Film(data.itemId, data.title, data.genres, data.language, data.seriesInfo, vm.director,
+                    Film film = new Film(data.itemId, data.title, data.genres, data.language, data.seriesInfo, data.publishYear, vm.director,
                             vm.actors, vm.mediaFormat, vm.translationInfo, filmType);
 
                     return film;
@@ -523,7 +536,7 @@ public class DatabaseRepository implements LibraryRepository {
             try (ResultSet gameRs = gamePrep.executeQuery()) {
                 if (gameRs.next()) {
                     String creator = gameRs.getString("creator");
-                    Game game = new Game(data.itemId, data.title, data.genres, data.language, data.seriesInfo, creator);
+                    Game game = new Game(data.itemId, data.title, data.genres, data.language, data.publishYear, data.seriesInfo, creator);
 
                     return game;
                 }
@@ -576,7 +589,7 @@ public class DatabaseRepository implements LibraryRepository {
                                 Season season = new Season(seasonNumber, episodes);
                                 seasons.add(season);
                             }
-                            TVSeries tvSeries = new TVSeries(data.itemId, data.title, data.genres, data.language, data.seriesInfo,
+                            TVSeries tvSeries = new TVSeries(data.itemId, data.title, data.genres, data.language, data.publishYear, data.seriesInfo,
                                     vm.director, vm.actors, vm.mediaFormat, vm.translationInfo, seasons);
                             return tvSeries;
                         }
@@ -602,6 +615,7 @@ public class DatabaseRepository implements LibraryRepository {
             String title;
             String itemType;
             String language;
+            Integer publishYear;
             SeriesInfo seriesInfo;
             List<String> genres;
         }

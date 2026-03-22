@@ -17,3 +17,16 @@ insert into fanficType (type)
 
 insert into translationinfo (translationTypeOrLanguage)
     values ('Svenska'), ('Engelska'), ('Spanska');
+
+ALTER TABLE libraryitem
+    ADD UNIQUE (title, itemType, language);
+
+ALTER TABLE libraryitem
+    ADD UNIQUE (title, itemType, language);
+
+Alter Table libraryitem
+    add publishYear int null;
+
+Alter Table libraryitem
+    drop Index title,
+    add UNIQUE (title , itemType, language, publishYear);

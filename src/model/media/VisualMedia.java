@@ -15,9 +15,9 @@ public abstract class VisualMedia extends LibraryItem {
     private final MediaFormat mediaFormat;
     private final TranslationInfo translationInfo;
 
-    public VisualMedia (int itemId, ItemType itemType, String title, List<String> genre, String language,
+    public VisualMedia (int itemId, ItemType itemType, String title, List<String> genre, String language, Integer publishYear,
                         SeriesInfo seriesInfo, String director, List<String> actors, MediaFormat mediaFormat, TranslationInfo translationInfo) {
-        super(itemId, itemType, title, genre, language, seriesInfo);
+        super(itemId, itemType, title, genre, language, publishYear, seriesInfo);
         this.director = director;
         if (actors != null) {
             this.actors = new ArrayList<>(actors);

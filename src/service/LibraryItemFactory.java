@@ -15,7 +15,7 @@ public class LibraryItemFactory {
 
     private final int id = 0;
 
-    public Game createGame(String title, List<String> genre, String language, SeriesInfo seriesInfo, String creator) {
+    public Game createGame(String title, List<String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, String creator) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title cannot be null or blank");
         }
@@ -24,10 +24,10 @@ public class LibraryItemFactory {
         }
 
 
-       return new Game(id, title, genre, language, seriesInfo, creator);
+       return new Game(id, title, genre, language, publishYear, seriesInfo, creator);
     }
 
-    public Book createBook(String title, List<String> genre, String language, SeriesInfo seriesInfo, List <String> author,
+    public Book createBook(String title, List<String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, List <String> author,
                            BookFormat bookFormat, FanficType fanficType, List<String> fandom) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title cannot be null or blank");
@@ -54,10 +54,10 @@ public class LibraryItemFactory {
         }
 
 
-        return new Book(id, title, genre, language, seriesInfo, safeAuthors, bookFormat, fanficType, fandom);
+        return new Book(id, title, genre, language, publishYear, seriesInfo, safeAuthors, bookFormat, fanficType, fandom);
     }
 
-    public Film createFilm (String title, List<String> genre, String language, SeriesInfo seriesInfo, String director,
+    public Film createFilm (String title, List<String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, String director,
                             List<String> actors, MediaFormat mediaFormat, FilmType filmType, TranslationInfo translationInfo) {
 
         movieTv(title, director, mediaFormat);
@@ -75,7 +75,7 @@ public class LibraryItemFactory {
         }
 
 
-        return new Film(id, title, genre, language, seriesInfo, director, safeActors, mediaFormat,  translationInfo, filmType);
+        return new Film(id, title, genre, language, seriesInfo, publishYear, director, safeActors, mediaFormat,  translationInfo, filmType);
     }
 
     private void movieTv(String title, String director, MediaFormat mediaFormat) {
@@ -92,7 +92,7 @@ public class LibraryItemFactory {
         }
     }
 
-    public TVSeries createTVSeries (String title, List<String> genre, String language, SeriesInfo seriesInfo, String director,
+    public TVSeries createTVSeries (String title, List<String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, String director,
                                     List<String> actors, MediaFormat mediaFormat,
                                     TranslationInfo translationInfo, List<Season> seasons) {
 
@@ -115,7 +115,7 @@ public class LibraryItemFactory {
         }
 
 
-        return new TVSeries(id, title, genre, language, seriesInfo, director, safeActors, mediaFormat, translationInfo, safeSeasons);
+        return new TVSeries(id, title, genre, language, publishYear, seriesInfo, director, safeActors, mediaFormat, translationInfo, safeSeasons);
 
     }
 }

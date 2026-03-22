@@ -66,34 +66,34 @@ public class LibraryService {
         return removed;
     }
 
-    public Game addGame (String title, List <String> genre, String language, SeriesInfo seriesInfo, String creator) {
+    public Game addGame (String title, List <String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, String creator) {
 
-        Game game = factory.createGame( title, genre, language, seriesInfo, creator);
+        Game game = factory.createGame( title, genre, language, publishYear, seriesInfo, creator);
         addItem(game);
         return game;
     }
 
-    public Book addBook(String title, List <String> genre, String language, SeriesInfo seriesInfo, List<String> author,
+    public Book addBook(String title, List <String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, List<String> author,
                         BookFormat bookFormat, FanficType fanficType, List<String> fandom) {
 
-        Book book = factory.createBook(title, genre, language, seriesInfo, author, bookFormat, fanficType, fandom);
+        Book book = factory.createBook(title, genre, language, publishYear, seriesInfo, author, bookFormat, fanficType, fandom);
         addItem(book);
         return book;
     }
 
-    public Film addFilm (String title, List <String> genre, String language, SeriesInfo seriesInfo, String director,
+    public Film addFilm (String title, List <String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, String director,
                          List<String> actors, MediaFormat mediaFormat, FilmType filmType, TranslationInfo translationInfo) {
 
-        Film film = factory.createFilm(title, genre, language, seriesInfo, director, actors, mediaFormat, filmType, translationInfo);
+        Film film = factory.createFilm(title, genre, language, publishYear, seriesInfo, director, actors, mediaFormat, filmType, translationInfo);
         addItem(film);
         return film;
     }
 
-    public TVSeries addTVSeries (String title, List <String> genre, String language, SeriesInfo seriesInfo, String director,
+    public TVSeries addTVSeries (String title, List <String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, String director,
                                  List<String> actors, MediaFormat mediaFormat,
                                  TranslationInfo translationInfo, List<Season> seasons) {
 
-        TVSeries tvSeries = factory.createTVSeries(title, genre, language, seriesInfo, director, actors, mediaFormat, translationInfo, seasons);
+        TVSeries tvSeries = factory.createTVSeries(title, genre, language, publishYear, seriesInfo, director, actors, mediaFormat, translationInfo, seasons);
         addItem(tvSeries);
         return tvSeries;
     }

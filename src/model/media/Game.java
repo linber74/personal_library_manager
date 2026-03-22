@@ -9,8 +9,8 @@ public class Game extends LibraryItem {
 
    private final String creator;
 
-    public Game(int itemId, String title, List<String> genre, String language, SeriesInfo seriesInfo, String creator) {
-        super(itemId, ItemType.GAME, title, genre, language, seriesInfo);
+    public Game(int itemId, String title, List<String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, String creator) {
+        super(itemId, ItemType.GAME, title, genre, language, publishYear, seriesInfo);
         this.creator = creator;
     }
 
@@ -21,6 +21,6 @@ public class Game extends LibraryItem {
     // TODO: Adjust toString() when final output format is decided.
     @Override
     public String toString() {
-        return creator;
+        return super.toString()+ " - " + creator;
     }
 }

@@ -14,9 +14,9 @@ public class Book extends LibraryItem {
     private final List <String> fandom;
     private final FanficType fanficType;
 
-    public Book(int itemId, String title, List<String> genre, String language,
+    public Book(int itemId, String title, List<String> genre, String language, Integer publishYear,
                 SeriesInfo seriesInfo, List<String> author, BookFormat bookFormat, FanficType fanficType, List<String> fandom) {
-        super(itemId, ItemType.BOOK, title, genre, language, seriesInfo);
+        super(itemId, ItemType.BOOK, title, genre, language, publishYear, seriesInfo);
         this.author = author;
         this.bookFormat = bookFormat;
         if (bookFormat == BookFormat.FANFICTION) {

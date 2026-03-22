@@ -13,14 +13,16 @@ public abstract class LibraryItem {
     private String title;
     private List<String> genre;
     private  String language;
+    private Integer publishYear;
     private SeriesInfo seriesInfo;
 
-    public LibraryItem(int itemId, ItemType itemType, String title, List<String> genre, String language, SeriesInfo seriesInfo) {
+    public LibraryItem(int itemId, ItemType itemType, String title, List<String> genre, String language, Integer publishYear, SeriesInfo seriesInfo) {
         this.itemId = itemId;
         this.itemType = itemType;
         this.title = title;
         this.genre = genre;
         this.language = language;
+        this.publishYear = publishYear;
         this.seriesInfo = seriesInfo;
     }
 
@@ -45,6 +47,10 @@ public abstract class LibraryItem {
         return language;
     }
 
+    public Integer getPublishYear() {
+        return publishYear;
+    }
+
     public SeriesInfo getSeriesInfo() {
         return seriesInfo;
     }
@@ -61,6 +67,10 @@ public abstract class LibraryItem {
         this.language = language;
     }
 
+    public  void setPublishYear(Integer publishYear) {
+        this.publishYear = publishYear;
+    }
+
     public  void setSeriesInfo(SeriesInfo serieInfo) {
         this.seriesInfo = serieInfo;
     }
@@ -69,6 +79,9 @@ public abstract class LibraryItem {
     public String toString(){
     // kort, UI-vänlig sammanfattning
         String base = "[" + itemType + "] " + title + " (" + language + ")";
+        if (publishYear != null) {
+            base += ", " + publishYear;
+        }
         if (seriesInfo != null) {
             base += " - " + seriesInfo;
         }
