@@ -46,7 +46,7 @@ public class Book extends LibraryItem {
     // TODO: Adjust toString() when final output format is decided.
     @Override
     public String toString() {
-        return "Författare: " + author + " - " + "Titel: " + getTitle();
+        return super.toString() + "Författare: " + author + " - " + "Titel: " + getTitle() + "\n";
     }
 }
 

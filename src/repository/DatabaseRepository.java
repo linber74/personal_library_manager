@@ -19,7 +19,6 @@ public class DatabaseRepository implements LibraryRepository {
         this.connectionManager = connectionManager;
     }
 
-
     @Override
     public List<LibraryItem> loadAll() {
         String sql = "Select * from libraryItem";
@@ -48,7 +47,6 @@ public class DatabaseRepository implements LibraryRepository {
         }
         return items;
     }
-
 
     @Override
     public LibraryItem findById(int itemId) {
@@ -79,7 +77,6 @@ public class DatabaseRepository implements LibraryRepository {
         }
         return null;
     }
-
 
     @Override
     public void save(LibraryItem item) {
@@ -546,6 +543,7 @@ public class DatabaseRepository implements LibraryRepository {
         }
         return null;
     }
+
     private TVSeries loadTVSeriesData(Connection conn, LibraryItemData data) {
         String tvSeriesSql = "Select * from tvSeries where itemId = ?";
         try (PreparedStatement tvSeriesPrep = conn.prepareStatement(tvSeriesSql)) {

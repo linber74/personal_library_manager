@@ -21,6 +21,6 @@ public class Game extends LibraryItem {
     // TODO: Adjust toString() when final output format is decided.
     @Override
     public String toString() {
-        return super.toString()+ " - " + creator;
+        return super.toString()+ creator + "\n";
     }
 }

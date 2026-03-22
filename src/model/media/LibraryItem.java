@@ -80,7 +80,7 @@ public abstract class LibraryItem {
     // kort, UI-vänlig sammanfattning
         String base = "[" + itemType + "] " + title + " (" + language + ")";
         if (publishYear != null) {
-            base += ", " + publishYear;
+            base += ", " + publishYear + ", ";
         }
         if (seriesInfo != null) {
             base += " - " + seriesInfo;
