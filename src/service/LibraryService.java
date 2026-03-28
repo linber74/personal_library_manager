@@ -6,8 +6,11 @@ import model.enums.*;
 import model.media.*;
 import repository.LibraryRepository;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class LibraryService {
 
@@ -42,16 +45,10 @@ public class LibraryService {
     }
 
     public LibraryItem getById (int itemId) {
-
-        if (itemId <= 0) {
-            return null;
-        }
-        for (LibraryItem item : items) {
-            if (itemId == item.getItemId()){
-                return item;
-            }
-        }
-        return  null;
+        return items.stream()
+                .filter(item -> item.getItemId() == itemId )
+                .findFirst()
+                .orElse(null);
     }
 
     public boolean removeById (int itemId) {
@@ -64,6 +61,127 @@ public class LibraryService {
             repository.deleteById(itemId);
         }
         return removed;
+    }
+
+    //getbyType
+    public List <LibraryItem> getByType(ItemType type) {
+        return items.stream()
+                .filter(item -> item.getItemType() == type)
+                .collect(Collectors.toList());
+    }
+
+    //getByGenre
+    public List <LibraryItem> getByGenre (String genre) {
+        return items.stream()
+                .filter(item -> item.getGenre().stream()
+                        .anyMatch(g -> g.toLowerCase().contains(genre.toLowerCase())))
+                .collect(Collectors.toList());
+    }
+
+    //getByLanguage
+    public List <LibraryItem> getByLanguage(String language) {
+        return items.stream()
+                .filter(item -> item.getLanguage().equals(language))
+                .collect(Collectors.toList());
+    }
+
+    //getByTitle
+    public List <LibraryItem> getByTitle(String title) {
+        return items.stream()
+                .filter(item -> item.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    //getByActor
+    public List <VisualMedia> getByActor (String actor) {
+        return items.stream()
+                .filter(item -> item instanceof VisualMedia)
+                .map(item -> (VisualMedia) item)
+                .filter(vm -> vm.getActors() != null && vm.getActors().stream()
+                        .anyMatch(a -> a.toLowerCase().contains(actor.toLowerCase())))
+                .collect(Collectors.toList());
+    }
+
+    //getByDirector
+    public List <VisualMedia> getBDirector (String director) {
+        return items.stream()
+                .filter(item -> item instanceof VisualMedia)
+                .map(item -> (VisualMedia) item)
+                .filter(vm -> vm.getDirector() != null && vm.getDirector()
+                        .toLowerCase().contains(director.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    //getByAuthor
+    public List <Book> getByAuthor (String author) {
+        return items.stream()
+                .filter(item -> item instanceof Book)
+                .map(item -> (Book) item)
+                .filter(book -> book.getAuthor() != null && book.getAuthor().stream()
+                        .anyMatch(a -> a.toLowerCase().contains(author.toLowerCase())))
+                        .collect(Collectors.toList());
+    }
+
+    //getBySeries
+    public List <LibraryItem> getBySeries (String series) {
+        return items.stream()
+                .filter(item -> item.getSeriesInfo() != null && item.getSeriesInfo()
+                        .getSeriesName().toLowerCase().contains(series.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    //getByFandom
+    public List <Book> getByFandom (String fandom) {
+        return items.stream()
+                .filter(item -> item instanceof Book)
+                .map(item -> (Book) item)
+                .filter(book -> book.getFandom() != null && book.getFandom().stream()
+                        .anyMatch(a -> a.toLowerCase().contains(fandom.toLowerCase())))
+                .collect(Collectors.toList());
+    }
+
+    //getByPublishYear
+    public List <LibraryItem> getByYear (Integer year) {
+        return items.stream()
+                .filter(item -> item.getPublishYear() != null
+                        && item.getPublishYear().equals(year))
+                        .collect(Collectors.toList());
+    }
+
+    //getByCreator
+    public  List <Game> getByCreator (String creator) {
+        return items.stream()
+                .filter(item -> item instanceof Game)
+                .map(item -> (Game) item)
+                .filter(game -> game.getCreator() != null && game.getCreator()
+                        .toLowerCase().contains(creator.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+    //getByBookFormat(BookFormat format) — alla ebooks, ljudböcker osv.
+    public List <Book> getByBookFormat (BookFormat bookFormat) {
+        return items.stream()
+                .filter(item -> item instanceof Book)
+                .map(item -> (Book) item)
+                .filter(format -> format.getBookFormat() == bookFormat)
+                        .collect(Collectors.toList());
+    }
+
+    //getByMediaFormat(MediaFormat format)
+    public List <VisualMedia> getByMediaFormat (MediaFormat mediaFormat) {
+        return items.stream()
+                .filter(item -> item instanceof VisualMedia)
+                .map(item -> (VisualMedia) item)
+                .filter(format -> format.getMediaFormat() == mediaFormat)
+                .collect(Collectors.toList());
+    }
+
+    //getByFanficType (FanficType type)
+    public List <Book> getByFanfictype (FanficType type) {
+        return items.stream()
+                .filter(item -> item instanceof Book)
+                .map(item -> (Book) item)
+                .filter(book -> book.getFanficType() != null && book.getFanficType() == type)
+                .collect(Collectors.toList());
     }
 
     public Game addGame (String title, List <String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, String creator) {
