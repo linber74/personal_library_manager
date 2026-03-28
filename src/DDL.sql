@@ -11,9 +11,6 @@ create table mediaFormat
 create table fanficType
 (type VARCHAR (50) not null primary key);
 
-create table filmType
-(type VARCHAR (50) not null primary key);
-
 create table seriesInfo
 (seriesName VARCHAR (50) not null primary key,
  partNumber INT not null);
@@ -35,10 +32,12 @@ create table fandom
 
 create table libraryitem
 (itemId int not null auto_increment primary key,
-title VARCHAR (100) not null,
-itemType VARCHAR (50) not null,
-language VARCHAR (50) not null,
-seriesName VARCHAR (50) null,
+ title VARCHAR (100) not null,
+ itemType VARCHAR (50) not null,
+ language VARCHAR (50) not null,
+ publishYear INT null,
+ seriesName VARCHAR (50) null,
+ UNIQUE (title, itemType, language, publishYear),
 foreign key (itemType) references itemType (type),
 foreign key (seriesName) references seriesInfo (seriesName),
 foreign key (language) references language (language));
@@ -52,14 +51,9 @@ foreign key (itemId) references libraryitem (itemId),
 foreign key (mediaFormat) references mediaFormat (format),
 foreign key (translationInfo) references translationInfo (translationTypeOrLanguage));
 
-
-
 create table film
 (itemId int not null primary key,
-filmType VARCHAR (50) not null,
-foreign key (itemId) references visualmedia (itemId),
-foreign key (filmType) references filmType (type));
-
+foreign key (itemId) references visualmedia (itemId));
 
 create table book 
 (itemId int not null primary key,
@@ -121,7 +115,6 @@ CREATE TABLE book_fandoms
 SELECT * FROM itemType;
 SELECT * FROM mediaFormat;
 SELECT * FROM fanficType;
-SELECT * FROM filmType;
 SELECT * FROM bookFormat;
 SELECT * FROM seriesInfo;
 SELECT * FROM translationInfo;

@@ -200,9 +200,9 @@ public class LibraryService {
     }
 
     public Film addFilm (String title, List <String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, String director,
-                         List<String> actors, MediaFormat mediaFormat, FilmType filmType, TranslationInfo translationInfo) {
+                         List<String> actors, MediaFormat mediaFormat,  TranslationInfo translationInfo) {
 
-        Film film = factory.createFilm(title, genre, language, publishYear, seriesInfo, director, actors, mediaFormat, filmType, translationInfo);
+        Film film = factory.createFilm(title, genre, language, publishYear, seriesInfo, director, actors, mediaFormat,  translationInfo);
         addItem(film);
         return film;
     }

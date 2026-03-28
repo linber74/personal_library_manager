@@ -147,14 +147,12 @@ public class DatabaseRepository implements LibraryRepository {
                 case FILM: {
 //
                     Film film = (Film) item;
-                    String filmSql = "Insert into film (itemId, filmType) values (?, ?)";
+                    String filmSql = "Insert into film (itemId) values (?, ?)";
 
                     insertVisualMedia(id, film);
 
                     try (PreparedStatement prep = conn.prepareStatement(filmSql)) {
                         prep.setInt(1, id);
-
-                        prep.setString(2, film.getFilmType().toString());
                         prep.executeUpdate();
                     }
                     break;
@@ -509,11 +507,8 @@ public class DatabaseRepository implements LibraryRepository {
                 if (filmRs.next()) {
                     VisualMediaData vm = loadVisualMediaData(data.itemId);
 
-                    // filmType
-                    FilmType filmType = FilmType.fromString(filmRs.getString("filmType"));
-
                     Film film = new Film(data.itemId, data.title, data.genres, data.language, data.seriesInfo, data.publishYear, vm.director,
-                            vm.actors, vm.mediaFormat, vm.translationInfo, filmType);
+                            vm.actors, vm.mediaFormat, vm.translationInfo);
 
                     return film;
                 }

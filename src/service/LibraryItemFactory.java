@@ -58,13 +58,9 @@ public class LibraryItemFactory {
     }
 
     public Film createFilm (String title, List<String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, String director,
-                            List<String> actors, MediaFormat mediaFormat, FilmType filmType, TranslationInfo translationInfo) {
+                            List<String> actors, MediaFormat mediaFormat, TranslationInfo translationInfo) {
 
         movieTv(title, director, mediaFormat);
-
-        if (filmType == null) {
-            throw new IllegalArgumentException("FilmType cannot be null");
-        }
 
         List<String> safeActors;
         if (actors == null) {
@@ -75,7 +71,7 @@ public class LibraryItemFactory {
         }
 
 
-        return new Film(id, title, genre, language, seriesInfo, publishYear, director, safeActors, mediaFormat,  translationInfo, filmType);
+        return new Film(id, title, genre, language, seriesInfo, publishYear, director, safeActors, mediaFormat,  translationInfo);
     }
 
     private void movieTv(String title, String director, MediaFormat mediaFormat) {

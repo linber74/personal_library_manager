@@ -1,10 +1,6 @@
-import model.enums.BookFormat;
-import model.enums.FilmType;
 import model.enums.MediaFormat;
 import model.enums.TranslationInfo;
-import model.media.Book;
 import model.media.Film;
-import model.media.Game;
 
 import repository.ConnectionManager;
 import repository.DatabaseRepository;
@@ -36,7 +32,7 @@ void main() {
 
     Film film = factory.createFilm("Titanic", List.of("Drama", "Romans"),"Engelska",1997 ,
             null, "James Cameron", List.of("Kate Winslet", "Leonardo DiCaprio",
-                    "Kathy Bates", "Frances Fisher"), MediaFormat.DVD, FilmType.FILM, TranslationInfo.SWEDISH);
+                    "Kathy Bates", "Frances Fisher"), MediaFormat.DVD, TranslationInfo.SWEDISH);
 
     data.save(film);
 
