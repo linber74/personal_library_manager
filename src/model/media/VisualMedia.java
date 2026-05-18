@@ -57,6 +57,36 @@ public abstract class VisualMedia extends LibraryItem {
     // TODO: Adjust toString() when final output format is decided.
     @Override
     public String toString() {
-        return super.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(getTitle()).append("\n");
+
+        if (director != null) {
+            sb.append("Director: ").append(director).append("\n");
+        } else {
+            sb.append("Director: Unknown\n");
+        }
+
+        if (!getActors().isEmpty()){sb.append("Actors: ").append(getActors()).append("\n");}
+
+        sb.append("Genre: ").append(getGenre()).append("\n");
+
+        if (getSeriesInfo() != null) {
+            sb.append("SeriesInfo: ").append(getSeriesInfo()).append("\n");
+        }
+
+        sb.append("Type: ").append(getItemType()).append("\n");
+
+        sb.append("Format: ").append(getMediaFormat()).append("\n");
+
+        sb.append("Language: ").append(getLanguage()).append("\n");
+
+        if (getTranslationInfo() != null) {
+            sb.append("TranslationInfo: ").append(getTranslationInfo()).append("\n");
+        }
+
+        if (getPublishYear() != null) {
+            sb.append("PublishYear: ").append(getPublishYear()).append("\n");
+        }
+        return sb.toString();
     }
 }

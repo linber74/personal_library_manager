@@ -78,9 +78,9 @@ public abstract class LibraryItem {
     @Override
     public String toString(){
     // kort, UI-vänlig sammanfattning
-        String base = "[" + itemType + "] " + title + " (" + language + ")";
+        String base = title + " | " + "Type: " + itemType + " | " + "(" + language + ")";
         if (publishYear != null) {
-            base += ", " + publishYear + ", ";
+            base += ", " + publishYear;
         }
         if (seriesInfo != null) {
             base += " - " + seriesInfo;
