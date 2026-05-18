@@ -26,8 +26,8 @@ public class Episode {
     @Override
     public String toString() {
         if (episodeName == null || episodeName.isBlank()) {
-            return "Avsnitt " +  episodeNumber;
+            return "Episode " +  episodeNumber;
         }
-        return "Avsnitt " + getEpisodeNumber() + " - " + getEpisodeName();
+        return "Episode " + getEpisodeNumber() + " - " + getEpisodeName();
     }
 }

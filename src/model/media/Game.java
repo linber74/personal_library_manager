@@ -21,6 +21,31 @@ public class Game extends LibraryItem {
     // TODO: Adjust toString() when final output format is decided.
     @Override
     public String toString() {
-        return super.toString()+ creator + "\n";
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(getTitle()).append("\n");
+
+        if (getSeriesInfo() != null) {
+            sb.append("SeriesInfo: ").append(getSeriesInfo()).append("\n");
+        }
+
+        sb.append("Genre: ").append(getGenre()).append("\n");
+
+        if (creator != null) {
+            sb.append("Creator: ").append(creator).append("\n");
+        } else {
+            sb.append("Creator: Unknown\n");
+        }
+
+        sb.append("Type: ").append(getItemType()).append("\n");
+
+        sb.append("Language: ").append(getLanguage()).append("\n");
+
+        if (getPublishYear() != null) {
+            sb.append("PublishYear: ").append(getPublishYear()).append("\n");
+        }
+
+        return sb.toString();
     }
 }
