@@ -27,3 +27,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+# Documents
+src/document/*.pdf
+src/document/*.docx
+
+# Settings
+resources/settings.properties
