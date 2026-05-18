@@ -1,5 +1,6 @@
 package model.media;
 
+import model.detail.Episode;
 import model.detail.Season;
 import model.detail.SeriesInfo;
 import model.enums.ItemType;
@@ -35,8 +36,45 @@ public class TVSeries extends VisualMedia {
     // TODO: Adjust toString() when final output format is decided.
     @Override
     public String toString() {
-        return super.toString();
-    }
+        StringBuilder sb = new StringBuilder();
+        sb.append(getTitle()).append("\n");
 
+        if (getDirector() != null) {
+            sb.append("Director: ").append(getDirector()).append("\n");
+        } else {
+            sb.append("Director: Unknown\n");
+        }
+
+        if (!getActors().isEmpty()){sb.append("Actors: ").append(getActors()).append("\n");}
+
+        sb.append("Genre: ").append(getGenre()).append("\n");
+
+        if (getSeriesInfo() != null) {
+            sb.append("SeriesInfo: ").append(getSeriesInfo()).append("\n");
+        }
+
+        for (Season season : getSeasons()) {
+            sb.append("Season: ")
+                    .append(season.getSeasonNumber()).append("\n");
+            for (Episode episode : season.getEpisodes()) {
+                sb.append(" ").append(episode).append("\n");
+            }
+        }
+
+        sb.append("Type: ").append(getItemType()).append("\n");
+
+        sb.append("Format: ").append(getMediaFormat()).append("\n");
+
+        sb.append("Language: ").append(getLanguage()).append("\n");
+
+        if (getTranslationInfo() != null) {
+            sb.append("TranslationInfo: ").append(getTranslationInfo()).append("\n");
+        }
+
+        if (getPublishYear() != null) {
+            sb.append("PublishYear: ").append(getPublishYear()).append("\n");
+        }
+        return sb.toString();
+    }
 }
 
