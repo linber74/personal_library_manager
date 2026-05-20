@@ -4,9 +4,9 @@ import java.util.logging.Logger;
 
 public enum TranslationInfo {
 
-    SWEDISH("Swedish"),
-    ENGLISH("English"),
-    SPANISH("Spanish");
+    SWEDISH("Svenska"),
+    ENGLISH("Engelska"),
+    SPANISH("Spanska");
 
     private final String translation;
 
