@@ -20,7 +20,7 @@ public enum FanficType {
         return ficType;
     }
 
-    private static final Logger LOGGER = Logger.getLogger(BookFormat.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(FanficType.class.getName());
 
     public static FanficType fromString (String text){
         for (FanficType fanficType :  FanficType.values() ) {

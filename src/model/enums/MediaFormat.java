@@ -23,7 +23,7 @@ public enum MediaFormat {
         return format;
     }
 
-    private static final Logger LOGGER = Logger.getLogger(BookFormat.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MediaFormat.class.getName());
 
     public static MediaFormat fromString (String text){
         for (MediaFormat mediaFormat :  MediaFormat.values() ) {
