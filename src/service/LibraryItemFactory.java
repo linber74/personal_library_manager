@@ -10,16 +10,22 @@ import model.media.TVSeries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LibraryItemFactory {
+
+    private static final Logger LOGGER = Logger.getLogger(LibraryItemFactory.class.getName());
 
     private final int id = 0;
 
     public Game createGame(String title, List<String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, String creator) {
         if (title == null || title.isBlank()) {
+
+            LOGGER.severe("Title is null or blank");
             throw new IllegalArgumentException("Title cannot be null or blank");
         }
         if (creator == null || creator.isBlank()) {
+            LOGGER.severe("Creator is null or blank");
             throw new IllegalArgumentException("Creator cannot be null or blank");
         }
 
@@ -30,6 +36,7 @@ public class LibraryItemFactory {
     public Book createBook(String title, List<String> genre, String language, Integer publishYear, SeriesInfo seriesInfo, List <String> author,
                            BookFormat bookFormat, FanficType fanficType, List<String> fandom) {
         if (title == null || title.isBlank()) {
+            LOGGER.severe("Title is null or blank");
             throw new IllegalArgumentException("Title cannot be null or blank");
         }
         List<String> safeAuthors;
@@ -40,13 +47,16 @@ public class LibraryItemFactory {
             safeAuthors = new ArrayList<>(author);
         }
         if (bookFormat == null) {
+            LOGGER.severe("BookFormat is null or blank");
             throw new IllegalArgumentException("BookFormat cannot be null");
         }
         if (bookFormat == BookFormat.FANFICTION) {
             if (fanficType == null) {
+                LOGGER.severe("FanficType is null or blank");
                 throw new IllegalArgumentException("FanficType cannot be null");
             } else if (fanficType != FanficType.ORIGINAL) {
                 if (fandom == null ||  fandom.isEmpty()) {
+                    LOGGER.severe("Fandom is null or blank");
                     throw new IllegalArgumentException("Fandom cannot be null or blank");
                 }
                 
@@ -76,14 +86,17 @@ public class LibraryItemFactory {
 
     private void movieTv(String title, String director, MediaFormat mediaFormat) {
         if (title == null || title.isBlank()) {
+            LOGGER.severe("Title is null or blank");
             throw new IllegalArgumentException("Title cannot be null or blank");
         }
 
         if (director == null || director.isBlank()) {
+            LOGGER.severe("Director is null or blank");
             throw new IllegalArgumentException("Director cannot be null or blank");
         }
 
         if (mediaFormat == null) {
+            LOGGER.severe("MediaFormat is null or blank");
             throw new IllegalArgumentException("MediaFormat cannot be null");
         }
     }
