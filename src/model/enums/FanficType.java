@@ -1,5 +1,7 @@
 package model.enums;
 
+import java.util.logging.Logger;
+
 public enum FanficType {
 
     CANON ("Canon"),
@@ -18,12 +20,15 @@ public enum FanficType {
         return ficType;
     }
 
+    private static final Logger LOGGER = Logger.getLogger(BookFormat.class.getName());
+
     public static FanficType fromString (String text){
         for (FanficType fanficType :  FanficType.values() ) {
             if (fanficType.ficType.equalsIgnoreCase(text)) {
                 return fanficType;
             }
         }
+        LOGGER.warning("Format " + text + " not supported");
         throw new IllegalArgumentException("Format " + text + " not supported");
     }
 }
