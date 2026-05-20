@@ -1,5 +1,7 @@
 package model.enums;
 
+import java.util.logging.Logger;
+
 public enum BookFormat {
 
     PRINT_BOOK ("Bok"),
@@ -22,12 +24,15 @@ public enum BookFormat {
         return bFormat;
     }
 
+    private static final Logger LOGGER = Logger.getLogger(BookFormat.class.getName());
+
     public static BookFormat fromString (String text){
         for (BookFormat bookFormat : BookFormat.values()) {
             if (bookFormat.bFormat.equalsIgnoreCase(text)) {
                 return bookFormat;
             }
         }
+        LOGGER.warning("BookFormat " + text + " not supported");
         throw new IllegalArgumentException("Format " + text + " not supported");
     }
 }
