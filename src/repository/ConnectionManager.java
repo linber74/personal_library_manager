@@ -7,8 +7,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class ConnectionManager {
+
+    private static final Logger LOGGER = Logger.getLogger(ConnectionManager.class.getName());
 
     private final String url;
     private final String user;
@@ -19,7 +22,8 @@ public class ConnectionManager {
         try (
                 InputStream stream = DatabaseRepository.class.getClassLoader().getResourceAsStream("settings.properties")) {
             if (stream == null) {
-                throw new FileNotFoundException("settings.properties not found");
+                LOGGER.severe("Could not load settings.properties");
+                throw new FileNotFoundException("Could not load settings.properties");
             }
             prop.load(stream);
 
@@ -28,16 +32,19 @@ public class ConnectionManager {
             this.password = prop.getProperty("db.password");
 
             if (url == null || url.isBlank()) {
-                throw new IllegalArgumentException("url saknas");
+                LOGGER.severe("url missing");
+                throw new IllegalArgumentException("url missing");
             } else if (user == null || user.isBlank()) {
+                LOGGER.severe("user missing");
                 throw new IllegalArgumentException("user saknas");
 
             } else if (password == null || password.isBlank()) {
-                throw new IllegalArgumentException("password saknas");
+                LOGGER.severe("password missing");
+                throw new IllegalArgumentException("password missing");
             }
 
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
+            LOGGER.severe("Could not load settings.properties");
             throw new RuntimeException("Kunde inte läsa settings.properties" + e);
         }
     }

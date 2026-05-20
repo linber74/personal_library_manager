@@ -9,9 +9,12 @@ import model.detail.Episode;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 public class DatabaseRepository implements LibraryRepository {
+
+    private static final Logger LOGGER = Logger.getLogger(DatabaseRepository.class.getName());
 
     private final ConnectionManager connectionManager;
 
@@ -43,7 +46,7 @@ public class DatabaseRepository implements LibraryRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while loading library items: " + e.getMessage());
         }
         return items;
     }
@@ -73,7 +76,7 @@ public class DatabaseRepository implements LibraryRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while trying to find library item with id " + itemId);
         }
         return null;
     }
@@ -147,7 +150,7 @@ public class DatabaseRepository implements LibraryRepository {
                 case FILM: {
 //
                     Film film = (Film) item;
-                    String filmSql = "Insert into film (itemId) values (?, ?)";
+                    String filmSql = "Insert into film (itemId) values (?)";
 
                     insertVisualMedia(id, film);
 
@@ -217,7 +220,7 @@ public class DatabaseRepository implements LibraryRepository {
         }catch (SQLIntegrityConstraintViolationException e) {
             System.out.println("Finns redan i databasen!");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Couldn't save to database: "+ e.getMessage());
         }
     }
 
@@ -266,7 +269,7 @@ public class DatabaseRepository implements LibraryRepository {
                 return true;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Problem while executing query: " + sql);
         }
         return false ;
     }
@@ -326,7 +329,7 @@ public class DatabaseRepository implements LibraryRepository {
                 list.add(rs.getString(columnName));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while retrieval: " + e.getMessage());
         }
         return list;
     }
@@ -339,7 +342,7 @@ public class DatabaseRepository implements LibraryRepository {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while update: " + e.getMessage());
         }
     }
 
@@ -348,8 +351,9 @@ public class DatabaseRepository implements LibraryRepository {
         PreparedStatement stmt = conn.prepareStatement(sql)){
             stmt.setInt(1, id);
             stmt.executeUpdate();
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while delete: " + e.getMessage());
         }
     }
 
@@ -359,8 +363,9 @@ public class DatabaseRepository implements LibraryRepository {
             stmt.setInt(1, id);
             stmt.setString(2, value);
             stmt.executeUpdate();
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while junction insert: " + e.getMessage());
         }
     }
 
@@ -377,7 +382,7 @@ public class DatabaseRepository implements LibraryRepository {
                 list.add(rs.getString(columnName));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+           LOGGER.severe("Error while retrieval by key: " + e.getMessage());
         }
         return list;
     }
@@ -409,7 +414,7 @@ public class DatabaseRepository implements LibraryRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while inserting visual media: " + e.getMessage());
         }
     }
 
@@ -443,7 +448,7 @@ public class DatabaseRepository implements LibraryRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while loading visual media: " + e.getMessage());
         }
         return null;
     }
@@ -493,7 +498,7 @@ public class DatabaseRepository implements LibraryRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while loading book: " + e.getMessage());
         }
         return null;
     }
@@ -514,7 +519,7 @@ public class DatabaseRepository implements LibraryRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while loading film: " + e.getMessage());
         }
         return null;
     }
@@ -534,7 +539,7 @@ public class DatabaseRepository implements LibraryRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while loading game: " + e.getMessage());
         }
         return null;
     }
@@ -590,7 +595,7 @@ public class DatabaseRepository implements LibraryRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error while loading TV series: " + e.getMessage());
         }
         return null;
     }

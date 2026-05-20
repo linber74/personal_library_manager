@@ -6,13 +6,14 @@ import model.enums.*;
 import model.media.*;
 import repository.LibraryRepository;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class LibraryService {
+
+    private static final Logger LOGGER = Logger.getLogger(LibraryService.class.getName());
 
     private final LibraryRepository repository;
     private final LibraryItemFactory factory;
@@ -20,9 +21,11 @@ public class LibraryService {
 
     public LibraryService(LibraryRepository repository, LibraryItemFactory factory) {
         if (repository == null) {
+            LOGGER.warning("LibraryRepository is null");
             throw new IllegalArgumentException("repository cannot be null");
         }
         if (factory == null) {
+            LOGGER.warning("LibraryItemFactory is null");
             throw new IllegalArgumentException("factory cannot be null");
         }
         this.repository = repository;
@@ -34,6 +37,7 @@ public class LibraryService {
 
     public void addItem(LibraryItem item) {
         if (item == null) {
+            LOGGER.warning("LibraryItem is null");
             throw new IllegalArgumentException("item cannot be null");
         }
         items.add(item);
@@ -103,7 +107,7 @@ public class LibraryService {
     }
 
     //getByDirector
-    public List <VisualMedia> getBDirector (String director) {
+    public List <VisualMedia> getByDirector (String director) {
         return items.stream()
                 .filter(item -> item instanceof VisualMedia)
                 .map(item -> (VisualMedia) item)

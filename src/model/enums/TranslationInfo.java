@@ -1,5 +1,7 @@
 package model.enums;
 
+import java.util.logging.Logger;
+
 public enum TranslationInfo {
 
     SWEDISH("Svenska"),
@@ -21,12 +23,15 @@ public enum TranslationInfo {
         return translation;
     }
 
+    private static final Logger LOGGER = Logger.getLogger(TranslationInfo.class.getName());
+
     public static TranslationInfo fromString (String text){
         for (TranslationInfo translationInfo :  TranslationInfo.values() ) {
             if (translationInfo.translation.equalsIgnoreCase(text)) {
                 return translationInfo;
             }
         }
+        LOGGER.warning("Format " + text + " not supported");
         throw new IllegalArgumentException("Format " + text + " not supported");
     }
 }
